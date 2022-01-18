@@ -1,8 +1,7 @@
-import { Dimensions, Platform } from 'react-native'
-import { getBottomSpace, isIphoneX } from 'react-native-iphone-x-helper'
-import { moderateScale, scale, verticalScale } from 'react-native-size-matters'
+import {Dimensions, Platform} from 'react-native';
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 
-const { width, height } = Dimensions.get('window')
+const {width, height} = Dimensions.get('window');
 
 const metrics = {
   marginHorizontal: 10,
@@ -40,7 +39,7 @@ const metrics = {
   horizontalLineHeight: 1,
   screenWidth: width < height ? width : height,
   screenHeight: width < height ? height : width,
-  navBarHeight: (Platform.OS === 'ios') ? 64 : 54,
+  navBarHeight: Platform.OS === 'ios' ? 64 : 54,
   buttonRadius: 4,
   icons: {
     xTiny: 8,
@@ -54,15 +53,15 @@ const metrics = {
     mediumX: 40,
     large: 45,
     xl: 50,
-    xxl: 55
+    xxl: 55,
   },
   images: {
     small: 20,
     medium: 40,
     large: 60,
-    logo: 200
-  }
-}
+    logo: 200,
+  },
+};
 
 export const MetricsHorizontal = {
   marginHorizontal: scale(10),
@@ -118,7 +117,7 @@ export const MetricsHorizontal = {
   horizontalLineHeight: scale(1),
   screenWidth: width < height ? width : height,
   screenHeight: width < height ? height : width,
-  navBarHeight: (Platform.OS === 'ios') ? 64 : 54,
+  navBarHeight: Platform.OS === 'ios' ? 64 : 54,
   buttonRadius: scale(4),
   icons: {
     xTiny: scale(8),
@@ -131,15 +130,15 @@ export const MetricsHorizontal = {
     large: scale(45),
     xl: scale(50),
     xli: scale(70),
-    xxl: scale(80)
+    xxl: scale(80),
   },
   images: {
     small: scale(20),
     medium: scale(40),
     large: scale(60),
-    logo: scale(200)
-  }
-}
+    logo: scale(200),
+  },
+};
 
 export const MetricsVertical = {
   marginHorizontal: verticalScale(10),
@@ -205,7 +204,7 @@ export const MetricsVertical = {
   horizontalLineHeight: verticalScale(1),
   screenWidth: width < height ? width : height,
   screenHeight: width < height ? height : width,
-  navBarHeight: (Platform.OS === 'ios') ? 64 : 54,
+  navBarHeight: Platform.OS === 'ios' ? 64 : 54,
   buttonRadius: verticalScale(4),
   tabBarHeight: verticalScale(60),
   icons: {
@@ -215,15 +214,15 @@ export const MetricsVertical = {
     normal: verticalScale(25),
     medium: verticalScale(30),
     large: verticalScale(45),
-    xl: verticalScale(50)
+    xl: verticalScale(50),
   },
   images: {
     small: verticalScale(20),
     medium: verticalScale(40),
     large: verticalScale(60),
-    logo: verticalScale(200)
-  }
-}
+    logo: verticalScale(200),
+  },
+};
 
 export const MetricsMod = {
   marginHorizontal: moderateScale(10),
@@ -359,13 +358,11 @@ export const MetricsMod = {
   horizontalLineHeight: moderateScale(1),
   screenWidth: width < height ? width : height,
   screenHeight: width < height ? height : width,
-  navBarHeight: moderateScale(Platform.OS === 'ios' && !isIphoneX() ? 70 : 85),
   buttonRadius: moderateScale(4),
   negativeFifteen: moderateScale(-15),
   negativeTen: moderateScale(-10),
   negativeFive: moderateScale(-5),
   negativeSeven: moderateScale(-7),
-  floatingButtonOffsetY: getBottomSpace() + moderateScale(60),
   floatingButtonOffsetX: moderateScale(20),
   tabsHeight: moderateScale(50),
   chatFeedMaxWidth: metrics.screenWidth - moderateScale(100),
@@ -376,14 +373,14 @@ export const MetricsMod = {
     small: moderateScale(20),
     medium: moderateScale(30),
     large: moderateScale(45),
-    xl: moderateScale(50)
+    xl: moderateScale(50),
   },
   images: {
     small: moderateScale(20),
     medium: moderateScale(40),
     large: moderateScale(60),
-    logo: moderateScale(200)
-  }
-}
+    logo: moderateScale(200),
+  },
+};
 
-export default metrics
+export default metrics;
