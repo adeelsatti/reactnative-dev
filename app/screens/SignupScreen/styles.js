@@ -1,0 +1,132 @@
+import {StyleSheet} from 'react-native';
+
+import {AppStyles, MetricsMod} from '../../themes';
+
+export default StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: AppStyles.colorSet.darkgreen,
+  },
+  keyboardHandle: {
+    marginVertical: MetricsMod.six,
+  },
+  profileImage: {
+    borderRadius: MetricsMod.fifty,
+    borderWidth: 1,
+    borderColor: AppStyles.colorSet.white,
+    alignSelf: 'center',
+    padding: 50,
+  },
+  ovalShapeView: {
+    width: 297,
+    height: 308,
+    left: 240,
+    top: -158,
+    position: 'absolute',
+    borderRadius: MetricsMod.threeHundred,
+    backgroundColor: AppStyles.colorSet.orange,
+  },
+  backButton: {
+    marginTop: MetricsMod.twenty,
+    padding: MetricsMod.twelve,
+  },
+  createAccountText: {
+    fontFamily: AppStyles.fontFamily.robotoBold,
+    fontSize: AppStyles.fontSet.large,
+    lineHeight: AppStyles.fontSet.large,
+    color: AppStyles.colorSet.white,
+    marginHorizontal: MetricsMod.twenty,
+    marginTop: MetricsMod.six,
+    width: 144,
+  },
+  textInputName: {
+    borderBottomWidth: 1,
+    marginHorizontal: MetricsMod.thirty,
+    color: AppStyles.colorSet.black,
+    fontSize: AppStyles.fontSet.normalI,
+    borderBottomColor: AppStyles.colorSet.white,
+    marginTop: MetricsMod.twelve,
+  },
+  buttonSignup: {
+    backgroundColor: AppStyles.colorSet.orange,
+    flexDirection: 'row',
+    paddingVertical: MetricsMod.twelve,
+    paddingHorizontal: MetricsMod.twelve,
+    marginHorizontal: MetricsMod.thirty,
+    borderRadius: MetricsMod.twelve,
+    marginTop: MetricsMod.twenty,
+    justifyContent: 'center',
+  },
+  buttonSignupText: {
+    color: AppStyles.colorSet.white,
+    fontFamily: AppStyles.fontFamily.robotoBold,
+    fontSize: AppStyles.fontSet.xmiddle,
+    lineHeight: MetricsMod.twenty,
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  footerSignupText: {
+    flex: 1,
+    alignContent: 'flex-end',
+    justifyContent: 'flex-end',
+  },
+  haveAnSignupAccountText: {
+    padding: MetricsMod.six,
+    fontFamily: AppStyles.fontFamily.robotoRegular,
+    color: AppStyles.colorSet.white,
+    fontSize: AppStyles.fontSet.xmiddle,
+  },
+  signinButton: {
+    fontFamily: AppStyles.fontFamily.robotoBold,
+    fontSize: AppStyles.fontSet.normal,
+    lineHeight: MetricsMod.twenty,
+    color: AppStyles.colorSet.darkgreen,
+  },
+  handleSignupText: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: AppStyles.colorSet.orange,
+  },
+  uploadImage: {
+    width: 80,
+    height: 80,
+    alignSelf: 'center',
+    borderRadius: MetricsMod.hundred,
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingHorizontal: MetricsMod.twenty,
+    marginTop: MetricsMod.twelve,
+  },
+  genderText: {
+    fontSize: AppStyles.fontSet.normal,
+    fontFamily: AppStyles.fontFamily.robotoBold,
+    color: AppStyles.colorSet.white,
+  },
+  errorSignupText: {
+    marginHorizontal: MetricsMod.thirty,
+    marginTop: MetricsMod.six,
+    color: AppStyles.colorSet.white,
+    fontSize: 12,
+  },
+  datePicker: {
+    marginHorizontal: MetricsMod.thirty,
+    width: '86%',
+    marginTop: MetricsMod.twelve,
+  },
+  dateIcon: {
+    position: 'absolute',
+    right: -5,
+    top: 4,
+    marginLeft: 0,
+    borderColor: 'gray',
+    alignItems: 'flex-start',
+    borderWidth: 0,
+    borderBottomWidth: 1,
+    color: AppStyles.colorSet.white,
+    fontSize: 17,
+  },
+});

@@ -14,6 +14,10 @@ target 'rn_practise_app' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'RNImageCropPicker', :path => '../node_modules/react-native-image-crop-picker'
+
+  pod 'react-native-text-input-mask', :path => '../node_modules/react-native-text-input-mask'
+
   target 'rn_practise_appTests' do
     inherit! :complete
     # Pods for testing
