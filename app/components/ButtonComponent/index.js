@@ -1,8 +1,9 @@
 import React from 'react';
-import {Text, TouchableOpacity} from 'react-native';
+import {ActivityIndicator, Text, TouchableOpacity} from 'react-native';
 
 import styles from './styles';
 import VectorIcon from '../VectorIcon';
+import {AppStyles} from '../../themes';
 
 const ButtonComponent = props => {
   const {
@@ -16,14 +17,16 @@ const ButtonComponent = props => {
     iconName,
     iconSize,
     iconColor,
+    loading,
   } = props || {};
+
   return (
     <TouchableOpacity
       style={[styles.button, buttonStyleWrapper]}
       activeOpacity={0.9}
       disabled={disabled}
       onPress={onPress}>
-      {isRightIcon && (
+      {Boolean(isRightIcon) && (
         <VectorIcon
           type={iconType}
           name={iconName}
@@ -31,7 +34,11 @@ const ButtonComponent = props => {
           color={iconColor}
         />
       )}
-      <Text style={buttonText}>{title}</Text>
+      {!loading ? (
+        <Text style={buttonText}>{title}</Text>
+      ) : (
+        <ActivityIndicator size="small" color={AppStyles.colorSet.pink} />
+      )}
     </TouchableOpacity>
   );
 };

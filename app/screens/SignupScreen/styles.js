@@ -7,6 +7,11 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: AppStyles.colorSet.darkgreen,
   },
+  loading: {
+    alignSelf: 'center',
+    position: 'absolute',
+    top: '50%',
+  },
   keyboardHandle: {
     marginVertical: MetricsMod.six,
   },
@@ -43,9 +48,8 @@ export default StyleSheet.create({
     borderBottomWidth: 1,
     marginHorizontal: MetricsMod.thirty,
     color: AppStyles.colorSet.black,
-    fontSize: AppStyles.fontSet.normalI,
+    fontSize: AppStyles.fontSet.medium,
     borderBottomColor: AppStyles.colorSet.white,
-    marginTop: MetricsMod.twelve,
   },
   buttonSignup: {
     backgroundColor: AppStyles.colorSet.orange,
@@ -74,11 +78,11 @@ export default StyleSheet.create({
     padding: MetricsMod.six,
     fontFamily: AppStyles.fontFamily.robotoRegular,
     color: AppStyles.colorSet.white,
-    fontSize: AppStyles.fontSet.xmiddle,
+    fontSize: AppStyles.fontSet.medium,
   },
   signinButton: {
     fontFamily: AppStyles.fontFamily.robotoBold,
-    fontSize: AppStyles.fontSet.normal,
+    fontSize: AppStyles.fontSet.medium,
     lineHeight: MetricsMod.twenty,
     color: AppStyles.colorSet.darkgreen,
   },
@@ -102,19 +106,19 @@ export default StyleSheet.create({
     marginTop: MetricsMod.twelve,
   },
   genderText: {
-    fontSize: AppStyles.fontSet.normal,
+    fontSize: AppStyles.fontSet.medium,
     fontFamily: AppStyles.fontFamily.robotoBold,
     color: AppStyles.colorSet.white,
   },
   errorSignupText: {
     marginHorizontal: MetricsMod.thirty,
     marginTop: MetricsMod.six,
-    color: AppStyles.colorSet.white,
+    color: AppStyles.colorSet.red,
     fontSize: 12,
   },
   datePicker: {
     marginHorizontal: MetricsMod.thirty,
-    width: '86%',
+    width: MetricsMod.threeHundredFifteen,
     marginTop: MetricsMod.twelve,
   },
   dateIcon: {
@@ -128,5 +132,34 @@ export default StyleSheet.create({
     borderBottomWidth: 1,
     color: AppStyles.colorSet.white,
     fontSize: 17,
+  },
+  modalContainer: {
+    backgroundColor: AppStyles.colorSet.white,
+    borderRadius: MetricsMod.nine,
+  },
+  buttonHandler: {
+    alignItems: 'flex-end',
+    marginHorizontal: MetricsMod.thirty,
+  },
+  selectImage: {
+    fontSize: AppStyles.fontSet.normal,
+    fontFamily: AppStyles.fontFamily.robotoBold,
+    color: AppStyles.colorSet.black,
+    paddingVertical: MetricsMod.nine,
+    paddingHorizontal: MetricsMod.nine,
+  },
+  cameraOption: {
+    fontSize: AppStyles.fontSet.normal,
+    fontFamily: AppStyles.fontFamily.robotoRegular,
+    color: AppStyles.colorSet.black,
+    paddingVertical: MetricsMod.nine,
+    paddingHorizontal: MetricsMod.nine,
+  },
+  buttonCancel: {
+    fontSize: AppStyles.fontSet.normal,
+    fontFamily: AppStyles.fontFamily.robotoBold,
+    color: AppStyles.colorSet.black,
+    paddingVertical: MetricsMod.nine,
+    paddingHorizontal: MetricsMod.nine,
   },
 });

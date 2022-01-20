@@ -1,13 +1,14 @@
 import React, {useState} from 'react';
-import {Alert, Image, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import MaskInput from 'react-native-mask-input/src/MaskInput';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useNavigation} from '@react-navigation/native';
-import * as yup from 'yup';
 import {Formik} from 'formik';
 import DatePicker from 'react-native-datepicker';
+import {ReactNativeModal} from 'react-native-modal';
+import {useDispatch, useSelector} from 'react-redux';
 
 import styles from './styles';
 import image1 from '../../../assets/Images/Ellipse1.png';
@@ -16,11 +17,19 @@ import VectorIcon from '../../components/VectorIcon';
 import {AppStyles} from '../../themes';
 import InputComponent from '../../components/InputComponent';
 import ButtonComponent from '../../components/ButtonComponent';
+import {signUpValidationSchema} from '../../Schema/signUpValidationSchema';
+import {addNewUser} from '../../redux/Actions/AuthActions';
+import {AUTH_SCREENS} from '../../constants/screen';
 
 const SignupScreen = () => {
   const navigation = useNavigation();
   const [image, setImage] = useState();
   const [checked, setChecked] = useState();
+  const [modal, setModal] = useState();
+  const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+  const userData = useSelector(state => state?.users);
 
   const captureImage = async () => {
     const img = await ImageCropPicker.openCamera({
@@ -29,33 +38,55 @@ const SignupScreen = () => {
       cropping: true,
     });
     setImage({uri: img?.path});
+    setModal(false);
+  };
+
+  const galleryImage = async () => {
+    const img = await ImageCropPicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    });
+    setImage({uri: img?.path});
+    setModal(false);
+  };
+
+  const handleModal = () => {
+    setModal(true);
   };
 
   const onGoBack = () => {
     navigation.goBack();
   };
 
+  const onCancel = () => {
+    setModal(false);
+  };
+
+  const dispatchUser = values => {
+    setLoading(true);
+    setTimeout(() => {
+      dispatch(addNewUser(values));
+      setLoading(false);
+      navigation.navigate(AUTH_SCREENS.LOGIN);
+    }, 10000);
+  };
+
   return (
     <Formik
       initialValues={{
-        name: '',
+        id: Math.floor(Math.random() * 1000) + 1,
+        profileImage: image?.uri,
+        fName: '',
+        lName: '',
         email: '',
         password: '',
+        checked: '',
         phone: '',
         dob: '',
       }}
-      onSubmit={values => Alert.alert(JSON.stringify(values))}
-      validationSchema={yup?.object()?.shape({
-        name: yup?.string()?.min(5)?.required('Please enter your name'),
-        email: yup?.string()?.email()?.required(),
-        password: yup
-          ?.string()
-          ?.min(4)
-          ?.max(10, 'Password should not exceed 10 chars.')
-          ?.required(),
-        phone: yup?.string()?.min(11)?.required(),
-        dob: yup?.string()?.required(),
-      })}>
+      onSubmit={values => dispatchUser(values)}
+      validationSchema={signUpValidationSchema}>
       {({
         values,
         handleChange,
@@ -79,32 +110,50 @@ const SignupScreen = () => {
 
             <Text style={styles.createAccountText}>Create Account</Text>
 
-            <TouchableOpacity onPress={captureImage}>
+            <TouchableOpacity onPress={handleModal}>
               <Image source={image ?? uploadImage} style={styles.uploadImage} />
             </TouchableOpacity>
             <InputComponent
-              placeholder="Name"
+              placeholder="First Name"
               placeholderTextColor={AppStyles.colorSet.white}
-              value={values?.name}
-              onChangeText={handleChange('name')}
-              onBlur={() => setFieldTouched('name')}
+              value={values?.fName}
+              onChangeText={handleChange('fName')}
+              onBlur={() => setFieldTouched('fName')}
               inputStyle={styles.textInputName}
+              errorText={styles.errorSignupText}
+              touched={touched?.fName}
+              errors={errors?.fName}
+              returnKeyType="next"
+              returnKeyLabel="next"
             />
-            {touched?.name && errors?.name && (
-              <Text style={styles.errorSignupText}>{errors?.name}</Text>
-            )}
+
+            <InputComponent
+              placeholder="Last Name"
+              placeholderTextColor={AppStyles.colorSet.white}
+              value={values?.lName}
+              onChangeText={handleChange('lName')}
+              onBlur={() => setFieldTouched('lName')}
+              inputStyle={styles.textInputName}
+              errorText={styles.errorSignupText}
+              touched={touched?.lName}
+              errors={errors?.lName}
+              returnKeyType="next"
+              returnKeyLabel="next"
+            />
 
             <InputComponent
               placeholder="Email"
               placeholderTextColor={AppStyles.colorSet.white}
-              value={values.email}
+              value={values?.email}
               onChangeText={handleChange('email')}
               onBlur={() => setFieldTouched('email')}
               inputStyle={styles.textInputName}
+              touched={touched?.email}
+              errors={errors?.email}
+              errorText={styles.errorSignupText}
+              returnKeyType="next"
+              returnKeyLabel="next"
             />
-            {touched?.email && errors?.email && (
-              <Text style={styles.errorSignupText}>{errors?.email}</Text>
-            )}
 
             <InputComponent
               placeholder="Password"
@@ -114,10 +163,12 @@ const SignupScreen = () => {
               onBlur={() => setFieldTouched('password')}
               inputStyle={styles.textInputName}
               secureTextEntry={true}
+              touched={touched?.password}
+              errors={errors?.password}
+              errorText={styles.errorSignupText}
+              returnKeyType="next"
+              returnKeyLabel="next"
             />
-            {touched?.password && errors?.password && (
-              <Text style={styles.errorSignupText}>{errors?.password}</Text>
-            )}
 
             <View style={styles.radioContainer}>
               <View>
@@ -137,12 +188,18 @@ const SignupScreen = () => {
                 <Text style={styles.genderText}>Female</Text>
               </View>
             </View>
+            {touched?.checked && errors?.checked && (
+              <Text style={styles.errorSignupText}>{errors?.checked}</Text>
+            )}
 
             <MaskInput
-              value={values.phone}
+              value={values?.phone}
               style={styles.textInputName}
               onChangeText={handleChange('phone')}
               onBlur={() => setFieldTouched('phone')}
+              keyboardType="numeric"
+              returnKeyType="next"
+              returnKeyLabel="next"
               mask={[
                 '(',
                 /\d/,
@@ -167,7 +224,7 @@ const SignupScreen = () => {
 
             <DatePicker
               style={styles.datePicker}
-              date={values.dob}
+              date={values?.dob}
               mode="date"
               placeholder="select date"
               format="DD/MM/YYYY"
@@ -203,13 +260,40 @@ const SignupScreen = () => {
               <Text style={styles.errorSignupText}>{errors?.dob}</Text>
             )}
 
+            <ReactNativeModal
+              isVisible={modal}
+              coverScreen={true}
+              hasBackdrop={true}
+              onBackdropPress={() => setModal(false)}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.selectImage}>Select Image</Text>
+                <TouchableOpacity onPress={captureImage}>
+                  <Text style={styles.cameraOption}>Take Photo...</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={galleryImage}>
+                  <Text style={styles.cameraOption}>
+                    Choose from Library...
+                  </Text>
+                </TouchableOpacity>
+
+                <View style={styles.buttonHandler}>
+                  <TouchableOpacity onPress={onCancel}>
+                    <Text style={styles.buttonCancel}>Cancel</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </ReactNativeModal>
+
             <ButtonComponent
               title="SIGN UP"
               buttonStyleWrapper={styles.buttonSignup}
               buttonText={styles.buttonSignupText}
               onPress={handleSubmit}
+              loading={loading}
             />
           </KeyboardAwareScrollView>
+
           <View style={styles.handleSignupText}>
             <Text style={styles.haveAnSignupAccountText}>
               Don't hava an account ?

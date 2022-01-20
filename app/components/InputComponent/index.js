@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput} from 'react-native';
+import {Text, TextInput} from 'react-native';
 
 const InputComponent = props => {
   const {
@@ -9,17 +9,31 @@ const InputComponent = props => {
     inputStyle,
     secureTextEntry,
     placeholderTextColor,
+    touched,
+    errors,
+    errorText,
+    onSubmitEditing,
+    returnKeyType,
+    returnKeyLabel,
   } = props;
 
   return (
-    <TextInput
-      placeholder={placeholder}
-      value={value}
-      placeholderTextColor={placeholderTextColor}
-      onChangeText={onChangeText}
-      style={[inputStyle]}
-      secureTextEntry={secureTextEntry}
-    />
+    <>
+      <TextInput
+        placeholder={placeholder}
+        value={value}
+        placeholderTextColor={placeholderTextColor}
+        onChangeText={onChangeText}
+        style={[inputStyle]}
+        onSubmitEditing={onSubmitEditing}
+        secureTextEntry={secureTextEntry}
+        returnKeyType={returnKeyType}
+        returnKeyLabel={returnKeyLabel}
+      />
+      {Boolean(touched) && Boolean(errors) && (
+        <Text style={errorText}>{errors}</Text>
+      )}
+    </>
   );
 };
 export default InputComponent;
