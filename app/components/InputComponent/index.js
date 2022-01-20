@@ -1,28 +1,25 @@
 import React from 'react';
-import {TextInput, View} from 'react-native';
-import {AppStyles} from '../../themes';
+import {TextInput} from 'react-native';
 
 const InputComponent = props => {
   const {
     placeholder,
     value,
     onChangeText,
-    containerStyle,
     inputStyle,
     secureTextEntry,
+    placeholderTextColor,
   } = props;
-  console.log(props);
+
   return (
-    <View style={[containerStyle]}>
-      <TextInput
-        placeholder={placeholder}
-        value={value}
-        placeholderTextColor={AppStyles.colorSet.silver}
-        onChangeText={onChangeText}
-        style={[inputStyle]}
-        secureTextEntry={secureTextEntry}
-      />
-    </View>
+    <TextInput
+      placeholder={placeholder}
+      value={value}
+      placeholderTextColor={placeholderTextColor}
+      onChangeText={onChangeText}
+      style={[inputStyle]}
+      secureTextEntry={secureTextEntry}
+    />
   );
 };
 export default InputComponent;
