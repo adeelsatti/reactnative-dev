@@ -29,7 +29,7 @@ const SignupScreen = () => {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
-  const userData = useSelector(state => state?.users);
+  const emailError = useSelector(state => state?.users);
 
   const captureImage = async () => {
     const img = await ImageCropPicker.openCamera({
@@ -63,13 +63,14 @@ const SignupScreen = () => {
     setModal(false);
   };
 
-  const dispatchUser = values => {
+  const dispatchUser = async values => {
     setLoading(true);
     setTimeout(() => {
       dispatch(addNewUser(values));
       setLoading(false);
       navigation.navigate(AUTH_SCREENS.LOGIN);
-    }, 10000);
+    }, 5000);
+    setLoading(false);
   };
 
   return (

@@ -1,12 +1,5 @@
-import React from 'react';
-import {
-  Alert,
-  Image,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, {useState} from 'react';
+import {Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -16,25 +9,39 @@ import image1 from '../../../assets/Images/Ellipse1.png';
 import image2 from '../../../assets/Images/Ellipse2.png';
 import InputComponent from '../../components/InputComponent';
 import ButtonComponent from '../../components/ButtonComponent';
-import {AUTH_SCREENS} from '../../constants/screen';
+import {AUTH_SCREENS, MAIN_SCREENS} from '../../constants/screen';
 import {AppStyles} from '../../themes';
 import {loginValidationSchema} from '../../Schema/LoginSchema';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {is_Login} from '../../redux/Actions/AuthActions';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const [loginAttempts, setLoginAttempts] = useState(5);
+
   const userData = useSelector(state => state?.users);
+  const users = userData?.users;
+  const dispatch = useDispatch();
 
   const onSignUp = () => {
     navigation.navigate(AUTH_SCREENS.SIGNUP);
   };
 
   const checkAccount = values => {
-    userData?.users?.map(user => {
-      if (user?.email === values?.email) {
-        return Alert.alert('User Exist', 'user exist in DB');
+    users?.map(user => {
+      if (
+        user?.email === values?.email &&
+        user?.password === values?.password
+      ) {
+        dispatch(is_Login(true));
+        navigation.navigate(MAIN_SCREENS.HOME);
       }
     });
+
+    setLoginAttempts(loginAttempts - 1);
+    if (loginAttempts === 0) {
+      navigation.navigate(AUTH_SCREENS.CUSTOMSUPPORT);
+    }
   };
 
   return (
