@@ -1,8 +1,15 @@
 import React from 'react';
-import {Alert, Image, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
-import * as yup from 'yup';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import styles from './styles';
 import image1 from '../../../assets/Images/Ellipse1.png';
@@ -11,13 +18,23 @@ import InputComponent from '../../components/InputComponent';
 import ButtonComponent from '../../components/ButtonComponent';
 import {AUTH_SCREENS} from '../../constants/screen';
 import {AppStyles} from '../../themes';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {loginValidationSchema} from '../../Schema/LoginSchema';
+import {useSelector} from 'react-redux';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const userData = useSelector(state => state?.users);
 
   const onSignUp = () => {
     navigation.navigate(AUTH_SCREENS.SIGNUP);
+  };
+
+  const checkAccount = values => {
+    userData?.users?.map(user => {
+      if (user?.email === values?.email) {
+        return Alert.alert('User Exist', 'user exist in DB');
+      }
+    });
   };
 
   return (
@@ -26,15 +43,10 @@ const LoginScreen = () => {
         email: '',
         password: '',
       }}
-      onSubmit={values => Alert.alert(JSON.stringify(values))}
-      validationSchema={yup?.object()?.shape({
-        email: yup?.string()?.email()?.required(),
-        password: yup
-          ?.string()
-          ?.min(4)
-          ?.max(10, 'Password should not exceed 10 chars.')
-          ?.required(),
-      })}>
+      onSubmit={
+        values => checkAccount(values) /*Alert.alert(JSON.stringify(values))*/
+      }
+      validationSchema={loginValidationSchema}>
       {({
         values,
         handleChange,
@@ -43,7 +55,7 @@ const LoginScreen = () => {
         touched,
         handleSubmit,
       }) => (
-        <View style={styles.mainContainer}>
+        <SafeAreaView style={styles.mainContainer}>
           <KeyboardAwareScrollView>
             <View style={styles.imageContainer}>
               <Image source={image1} style={styles.ovalShapeViewOrange} />
@@ -53,30 +65,35 @@ const LoginScreen = () => {
 
             <InputComponent
               placeholder="Email"
+              autoFocus={true}
               placeholderTextColor={AppStyles.colorSet.silver}
-              value={values.email}
+              value={values?.email}
               onChangeText={handleChange('email')}
               onBlur={() => setFieldTouched('email')}
               containerStyle={styles.textInputContainer}
               inputStyle={styles.inputStyle}
+              touched={touched?.email}
+              errors={errors?.email}
+              errorText={styles.errorText}
+              returnKeyType="next"
+              returnKeyLabel="next"
             />
-            {touched?.email && errors?.email && (
-              <Text style={styles.errorText}>{errors?.email}</Text>
-            )}
 
             <InputComponent
               placeholder="Password"
               placeholderTextColor={AppStyles.colorSet.silver}
-              value={values.password}
+              value={values?.password}
               onChangeText={handleChange('password')}
               onBlur={() => setFieldTouched('password')}
               containerStyle={styles.textInputContainer}
               inputStyle={styles.inputStyle}
               secureTextEntry={true}
+              touched={touched?.password}
+              errors={errors?.password}
+              errorText={styles.errorText}
+              returnKeyType="next"
+              returnKeyLabel="next"
             />
-            {touched?.password && errors?.password && (
-              <Text style={styles.errorText}>{errors?.password}</Text>
-            )}
 
             <TouchableOpacity style={styles.forgetButton}>
               <Text style={styles.forgetText}>Forget Password ?</Text>
@@ -98,7 +115,7 @@ const LoginScreen = () => {
               <Text style={styles.signupButton}>SIGN UP</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </SafeAreaView>
       )}
     </Formik>
   );
