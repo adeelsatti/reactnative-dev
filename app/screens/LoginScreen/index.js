@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
-
+import {useDispatch, useSelector} from 'react-redux';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import styles from './styles';
@@ -13,10 +13,7 @@ import ButtonComponent from '../../components/ButtonComponent';
 import {AUTH_SCREENS, MAIN_SCREENS} from '../../constants/screen';
 import {AppStyles} from '../../themes';
 import {loginValidationSchema} from '../../Schema/LoginSchema';
-import {useDispatch, useSelector} from 'react-redux';
 import {is_Login, is_Support} from '../../redux/Actions/AuthActions';
-import _ from 'lodash';
-import {waitFor} from '@babel/core/lib/gensync-utils/async';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
