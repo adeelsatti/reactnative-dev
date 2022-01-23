@@ -2,10 +2,14 @@ import React, {useEffect} from 'react';
 import {BackHandler, Linking, Text, TouchableOpacity, View} from 'react-native';
 
 import styles from './styles';
+import {is_Support} from '../../redux/Actions/AuthActions';
+import {useDispatch} from 'react-redux';
 
 const CustomSupport = () => {
   const mail = 'hr@echt-tech.com';
   const phoneNumber = '+(11) 11111 1111';
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -17,6 +21,7 @@ const CustomSupport = () => {
 
   const handleLinking = async url => {
     await Linking.openURL(url);
+    dispatch(is_Support(false));
   };
 
   return (
@@ -35,16 +40,18 @@ const CustomSupport = () => {
       </Text>
 
       <View style={styles.contactUsContainer}>
-        <Text style={styles.textStyling}>Mail Us:</Text>
-        <TouchableOpacity onPress={() => handleLinking('mailto:' + mail)}>
-          <Text style={styles.textStyling}>{mail}</Text>
+        <TouchableOpacity
+          style={styles.mailButton}
+          onPress={() => handleLinking('mailto:' + mail)}>
+          <Text style={styles.textStyling}>Email</Text>
         </TouchableOpacity>
-      </View>
 
-      <View style={styles.contactUsContainer}>
-        <Text style={styles.textStyling}>Call Us:</Text>
-        <TouchableOpacity onPress={() => handleLinking('tel:' + phoneNumber)}>
-          <Text style={styles.textStyling}>{phoneNumber}</Text>
+        <Text style={styles.textStyling}>OR</Text>
+
+        <TouchableOpacity
+          style={styles.mailButton}
+          onPress={() => handleLinking('tel:' + phoneNumber)}>
+          <Text style={styles.textStyling}>Phone</Text>
         </TouchableOpacity>
       </View>
     </View>

@@ -4,6 +4,7 @@ const InitialState = {
   users: [],
   is_LogIn: false,
   error: 'error duplicate email',
+  is_Support: false,
 };
 
 export const userReducer = (state = InitialState, action) => {
@@ -28,6 +29,12 @@ export const userReducer = (state = InitialState, action) => {
       return {
         ...state,
         is_Login: action?.payload,
+      };
+    }
+    case Action.IS_SUPPORT: {
+      return {
+        ...state,
+        is_Support: action?.payload,
       };
     }
     default: {

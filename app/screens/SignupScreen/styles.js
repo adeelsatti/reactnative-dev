@@ -122,20 +122,20 @@ export default StyleSheet.create({
     marginTop: MetricsMod.twelve,
   },
   dateIcon: {
-    position: 'absolute',
-    right: -5,
-    top: 4,
-    marginLeft: 0,
     borderColor: 'gray',
     alignItems: 'flex-start',
-    borderWidth: 0,
     borderBottomWidth: 1,
-    color: AppStyles.colorSet.white,
-    fontSize: 17,
+    borderBottomColor: AppStyles.colorSet.white,
+    marginHorizontal: MetricsMod.thirty,
+    marginTop: MetricsMod.twelve,
   },
   modalContainer: {
     backgroundColor: AppStyles.colorSet.white,
     borderRadius: MetricsMod.nine,
+  },
+  dateTextHandle: {
+    color: AppStyles.colorSet.white,
+    fontSize: AppStyles.fontSet.medium,
   },
   buttonHandler: {
     alignItems: 'flex-end',

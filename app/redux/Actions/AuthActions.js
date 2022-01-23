@@ -13,3 +13,10 @@ export const is_Login = value => {
     payload: value,
   };
 };
+
+export const is_Support = value => {
+  return {
+    type: Action.IS_SUPPORT,
+    payload: value,
+  };
+};

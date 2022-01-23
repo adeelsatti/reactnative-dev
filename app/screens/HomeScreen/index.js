@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, Text, TouchableOpacity} from 'react-native';
+import {SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 
@@ -17,11 +17,13 @@ const HomeScreen = () => {
   };
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <Text style={styles.titleText}>Login Successfully</Text>
+      <View style={styles.mainViewWrapper}>
+        <Text style={styles.titleText}>Login Successfully</Text>
 
-      <TouchableOpacity style={styles.LogoutButton} onPress={onLogout}>
-        <Text style={styles.LogoutText}>Logout</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.LogoutButton} onPress={onLogout}>
+          <Text style={styles.LogoutText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
+
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import styles from './styles';
@@ -13,11 +14,15 @@ import {AUTH_SCREENS, MAIN_SCREENS} from '../../constants/screen';
 import {AppStyles} from '../../themes';
 import {loginValidationSchema} from '../../Schema/LoginSchema';
 import {useDispatch, useSelector} from 'react-redux';
-import {is_Login} from '../../redux/Actions/AuthActions';
+import {is_Login, is_Support} from '../../redux/Actions/AuthActions';
+import _ from 'lodash';
+import {waitFor} from '@babel/core/lib/gensync-utils/async';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const [loginAttempts, setLoginAttempts] = useState(5);
+  const _ = require('lodash');
+  const [loginAttempts, setLoginAttempts] = useState(4);
+  const [loading, setLoading] = useState(false);
 
   const userData = useSelector(state => state?.users);
   const users = userData?.users;
@@ -27,7 +32,7 @@ const LoginScreen = () => {
     navigation.navigate(AUTH_SCREENS.SIGNUP);
   };
 
-  const checkAccount = values => {
+  const waitFor = values => {
     users?.map(user => {
       if (
         user?.email === values?.email &&
@@ -37,11 +42,17 @@ const LoginScreen = () => {
         navigation.navigate(MAIN_SCREENS.HOME);
       }
     });
-
-    setLoginAttempts(loginAttempts - 1);
     if (loginAttempts === 0) {
+      dispatch(is_Support(true));
       navigation.navigate(AUTH_SCREENS.CUSTOMSUPPORT);
     }
+    setLoginAttempts(loginAttempts - 1);
+    setLoading(false);
+  };
+
+  const checkAccount = values => {
+    setLoading(true);
+    _.delay(async () => await waitFor(values), 5000);
   };
 
   return (
@@ -50,9 +61,7 @@ const LoginScreen = () => {
         email: '',
         password: '',
       }}
-      onSubmit={
-        values => checkAccount(values) /*Alert.alert(JSON.stringify(values))*/
-      }
+      onSubmit={values => checkAccount(values)}
       validationSchema={loginValidationSchema}>
       {({
         values,
@@ -110,6 +119,7 @@ const LoginScreen = () => {
               title="SIGN IN"
               buttonStyleWrapper={styles.buttonSignin}
               buttonText={styles.buttonText}
+              loading={loading}
               onPress={handleSubmit}
             />
           </KeyboardAwareScrollView>
