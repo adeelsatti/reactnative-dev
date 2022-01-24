@@ -20,3 +20,9 @@ export const is_Support = value => {
     payload: value,
   };
 };
+
+export const resetError = () => {
+  return {
+    type: Action.RESET_ERROR,
+  };
+};

@@ -8,20 +8,19 @@ import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
 import {ReactNativeModal} from 'react-native-modal';
 import {useDispatch, useSelector} from 'react-redux';
+import moment from 'moment';
+import DatePicker from 'react-native-datepicker';
+import _ from 'lodash';
 
 import styles from './styles';
-import image1 from '../../../assets/Images/Ellipse1.png';
 import uploadImage from '../../../assets/Images/uploadImage.png';
 import VectorIcon from '../../components/VectorIcon';
-import {AppStyles} from '../../themes';
+import {AppStyles, Images} from '../../themes';
 import InputComponent from '../../components/InputComponent';
 import ButtonComponent from '../../components/ButtonComponent';
 import {signUpValidationSchema} from '../../Schema/signUpValidationSchema';
 import {addNewUser} from '../../redux/Actions/AuthActions';
 import {AUTH_SCREENS} from '../../constants/screen';
-import moment from 'moment';
-import DatePicker from 'react-native-datepicker';
-import _ from 'lodash';
 
 const SignupScreen = () => {
   const navigation = useNavigation();
@@ -29,13 +28,13 @@ const SignupScreen = () => {
   const [modal, setModal] = useState();
   const [loading, setLoading] = useState(false);
 
-  const selectDOBText = 'Select DOB';
+  /*const selectDOBText = 'Select DOB';
   const getCurrentDate = moment('12-25-1995', 'MM-DD-YYYY');
   const initialDate = getCurrentDate
     ?.toISOString()
     ?.replace('-', '/')
     ?.split('T')[0]
-    ?.replace('-', '/');
+    ?.replace('-', '/');*/
 
   let initialValues = {
     id: Math.floor(Math.random() * 1000) + 1,
@@ -80,6 +79,10 @@ const SignupScreen = () => {
     navigation.goBack();
   };
 
+  const onSignIn = () => {
+    navigation.navigate(AUTH_SCREENS.LOGIN);
+  };
+
   const onCancel = () => {
     setModal(false);
   };
@@ -110,7 +113,7 @@ const SignupScreen = () => {
       }) => (
         <View style={styles.mainContainer}>
           <KeyboardAwareScrollView style={styles.keyboardHandle}>
-            <Image source={image1} style={styles.ovalShapeView} />
+            <Image source={Images.ellipseImage1} style={styles.ovalShapeView} />
 
             <VectorIcon
               name="chevron-back"
@@ -124,7 +127,10 @@ const SignupScreen = () => {
             <Text style={styles.createAccountText}>Create Account</Text>
 
             <TouchableOpacity onPress={handleModal} style={styles.uploadImage}>
-              <Image source={image ?? uploadImage} style={styles.uploadImage} />
+              <Image
+                source={image ?? Images.uploadImage}
+                style={styles.uploadImage}
+              />
             </TouchableOpacity>
             <InputComponent
               placeholder="First Name"
@@ -309,7 +315,7 @@ const SignupScreen = () => {
             <Text style={styles.haveAnSignupAccountText}>
               Don't hava an account ?
             </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onSignIn}>
               <Text style={styles.signinButton}>SIGN IN</Text>
             </TouchableOpacity>
           </View>

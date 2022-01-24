@@ -37,6 +37,13 @@ export const userReducer = (state = InitialState, action) => {
         is_Support: action?.payload,
       };
     }
+    case Action.RESET_ERROR: {
+      return {
+        ...state,
+        error: '',
+      };
+    }
+
     default: {
       return state;
     }

@@ -6,34 +6,87 @@ export default StyleSheet.create({
   mainContainer: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: AppStyles.colorSet.darkgreen,
+    backgroundColor: AppStyles.colorSet.offWhiteX,
   },
-  mainViewWrapper: {
-    borderRadius: MetricsMod.thirty,
-    padding: MetricsMod.thirtyFour,
-    backgroundColor: AppStyles.colorSet.white,
-    marginHorizontal: MetricsMod.thirtyFour,
-    shadowColor: AppStyles.colorSet.black,
-    shadowOpacity: 1,
-    shadowRadius: 12,
-    elevation: 200,
+  orangeOval: {
+    position: 'absolute',
+    height: 308,
+    left: 240,
+    top: -158,
+    borderRadius: MetricsMod.threeHundred,
+    backgroundColor: AppStyles.colorSet.orange,
   },
-  titleText: {
+  imageContainer: {
+    flexDirection: 'row',
+    marginHorizontal: MetricsMod.twenty,
+    marginVertical: MetricsMod.twenty,
+    justifyContent: 'space-between',
+  },
+  logoutImage: {
+    width: MetricsMod.sixty,
+    height: MetricsMod.sixty,
+  },
+  userListing: {
+    fontSize: AppStyles.fontSet.middleIII,
     fontFamily: AppStyles.fontFamily.robotoBold,
-    fontSize: AppStyles.fontSet.normal,
+    marginHorizontal: MetricsMod.thirty,
+    marginTop: MetricsMod.nine,
     color: AppStyles.colorSet.darkgreen,
   },
-  LogoutText: {
-    fontFamily: AppStyles.fontFamily.robotoBold,
+  mainItemContainer: {
+    flexDirection: 'row',
+    marginHorizontal: MetricsMod.thirty,
+    marginTop: MetricsMod.nine,
+    shadowColor: AppStyles.colorSet.black,
+    backgroundColor: AppStyles.colorSet.darkgreen,
+    borderRadius: MetricsMod.twenty,
+    shadowOpacity: 1,
+    shadowRadius: 12,
+    elevation: 1,
+  },
+  itemTitle: {
+    color: AppStyles.colorSet.white,
     fontSize: AppStyles.fontSet.normal,
+    fontFamily: AppStyles.fontFamily.robotoBold,
+    padding: MetricsMod.six,
+  },
+  itemBody: {
+    color: AppStyles.colorSet.white,
+    fontSize: AppStyles.fontSet.normal,
+    fontFamily: AppStyles.fontFamily.robotoRegular,
+    padding: MetricsMod.six,
+  },
+  itemUserID: {
+    alignSelf: 'center',
+    color: AppStyles.colorSet.orange,
+    fontSize: AppStyles.fontSet.normal,
+    fontFamily: AppStyles.fontFamily.robotoMedium,
+    padding: MetricsMod.six,
+  },
+  searchInput: {
+    borderRadius: MetricsMod.twenty,
+    marginTop: MetricsMod.thirtyEight,
+    backgroundColor: AppStyles.colorSet.darkgreen,
+  },
+  inputTextStyle: {
     color: AppStyles.colorSet.white,
   },
-  LogoutButton: {
-    alignItems: 'center',
-    borderRadius: MetricsMod.thirty,
-    marginTop: MetricsMod.thirty,
-    paddingHorizontal: MetricsMod.twenty,
-    paddingVertical: MetricsMod.nine,
-    backgroundColor: AppStyles.colorSet.darkgreen,
+  searchIconColor: {
+    tintColor: AppStyles.colorSet.white,
+  },
+  ItemTextWrapper: {
+    flex: 1,
+    marginTop: MetricsMod.six,
+    marginHorizontal: MetricsMod.thirty,
+    justifyContent: 'space-between',
+  },
+  titleContainer: {
+    flexDirection: 'row',
+  },
+  menuContainer: {},
+  menuButton: {},
+  menuWrapper: {
+    marginTop: MetricsMod.twenty,
+    marginHorizontal: MetricsMod.six,
   },
 });
