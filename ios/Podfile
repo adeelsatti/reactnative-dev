@@ -18,6 +18,8 @@ target 'rn_practise_app' do
 
   pod 'react-native-text-input-mask', :path => '../node_modules/react-native-text-input-mask'
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-async-storage/async-storage'
+
   target 'rn_practise_appTests' do
     inherit! :complete
     # Pods for testing

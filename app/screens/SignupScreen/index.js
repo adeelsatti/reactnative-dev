@@ -6,7 +6,6 @@ import MaskInput from 'react-native-mask-input/src/MaskInput';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
-import DatePicker from 'react-native-datepicker';
 import {ReactNativeModal} from 'react-native-modal';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -20,16 +19,38 @@ import ButtonComponent from '../../components/ButtonComponent';
 import {signUpValidationSchema} from '../../Schema/signUpValidationSchema';
 import {addNewUser} from '../../redux/Actions/AuthActions';
 import {AUTH_SCREENS} from '../../constants/screen';
+import moment from 'moment';
+import DatePicker from 'react-native-datepicker';
+import _ from 'lodash';
 
 const SignupScreen = () => {
   const navigation = useNavigation();
   const [image, setImage] = useState();
-  const [checked, setChecked] = useState();
   const [modal, setModal] = useState();
   const [loading, setLoading] = useState(false);
 
+  const selectDOBText = 'Select DOB';
+  const getCurrentDate = moment('12-25-1995', 'MM-DD-YYYY');
+  const initialDate = getCurrentDate
+    ?.toISOString()
+    ?.replace('-', '/')
+    ?.split('T')[0]
+    ?.replace('-', '/');
+
+  let initialValues = {
+    id: Math.floor(Math.random() * 1000) + 1,
+    profileImage: '' ?? uploadImage,
+    fName: '',
+    lName: '',
+    email: '',
+    password: '',
+    gender: '',
+    phone: '',
+    dob: '',
+  };
+
   const dispatch = useDispatch();
-  const userData = useSelector(state => state?.users);
+  const emailError = useSelector(state => state?.users);
 
   const captureImage = async () => {
     const img = await ImageCropPicker.openCamera({
@@ -47,7 +68,7 @@ const SignupScreen = () => {
       height: 400,
       cropping: true,
     });
-    setImage({uri: img?.path});
+    setImage(img);
     setModal(false);
   };
 
@@ -63,28 +84,20 @@ const SignupScreen = () => {
     setModal(false);
   };
 
-  const dispatchUser = values => {
+  const addUser = values => {
+    dispatch(addNewUser(values));
+    setLoading(false);
+    navigation.navigate(AUTH_SCREENS.LOGIN);
+  };
+
+  const dispatchUser = async values => {
     setLoading(true);
-    setTimeout(() => {
-      dispatch(addNewUser(values));
-      setLoading(false);
-      navigation.navigate(AUTH_SCREENS.LOGIN);
-    }, 10000);
+    _.delay(async () => await addUser(values), 5000);
   };
 
   return (
     <Formik
-      initialValues={{
-        id: Math.floor(Math.random() * 1000) + 1,
-        profileImage: image?.uri,
-        fName: '',
-        lName: '',
-        email: '',
-        password: '',
-        checked: '',
-        phone: '',
-        dob: '',
-      }}
+      initialValues={initialValues}
       onSubmit={values => dispatchUser(values)}
       validationSchema={signUpValidationSchema}>
       {({
@@ -110,7 +123,7 @@ const SignupScreen = () => {
 
             <Text style={styles.createAccountText}>Create Account</Text>
 
-            <TouchableOpacity onPress={handleModal}>
+            <TouchableOpacity onPress={handleModal} style={styles.uploadImage}>
               <Image source={image ?? uploadImage} style={styles.uploadImage} />
             </TouchableOpacity>
             <InputComponent
@@ -170,26 +183,23 @@ const SignupScreen = () => {
               returnKeyLabel="next"
             />
 
-            <View style={styles.radioContainer}>
-              <View>
-                <RadioButton
-                  value={checked}
-                  status={checked === 'Male' ? 'checked' : 'unchecked'}
-                  onPress={() => setChecked('Male')}
-                />
-                <Text style={styles.genderText}>Male</Text>
+            <RadioButton.Group
+              onValueChange={handleChange('gender')}
+              onBlur={handleChange('gender')}
+              value={values?.gender}>
+              <View style={styles.radioContainer}>
+                <View>
+                  <Text style={styles.genderText}>Male</Text>
+                  <RadioButton value="Male" />
+                </View>
+                <View>
+                  <Text style={styles.genderText}>Female</Text>
+                  <RadioButton value="Female" />
+                </View>
               </View>
-              <View>
-                <RadioButton
-                  value={checked}
-                  status={checked === 'Female' ? 'checked' : 'unchecked'}
-                  onPress={() => setChecked('Female')}
-                />
-                <Text style={styles.genderText}>Female</Text>
-              </View>
-            </View>
-            {touched?.checked && errors?.checked && (
-              <Text style={styles.errorSignupText}>{errors?.checked}</Text>
+            </RadioButton.Group>
+            {touched?.gender && errors?.gender && (
+              <Text style={styles.errorSignupText}>{errors?.gender}</Text>
             )}
 
             <MaskInput
@@ -225,6 +235,7 @@ const SignupScreen = () => {
             <DatePicker
               style={styles.datePicker}
               date={values?.dob}
+              initialValue={new Date(moment('1994/1/1', 'DD-MM-YYYY'))}
               mode="date"
               placeholder="select date"
               format="DD/MM/YYYY"
