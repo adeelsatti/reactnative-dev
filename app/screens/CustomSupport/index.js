@@ -16,7 +16,7 @@ const CustomSupport = () => {
       'hardwareBackPress',
       () => true,
     );
-    return () => backHandler.remove();
+    backHandler.remove();
   }, []);
 
   const handleLinking = async url => {

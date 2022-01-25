@@ -1,8 +1,5 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
-import {moderateScale, scale} from 'react-native-size-matters';
-import Images from './Images';
-import {MetricsHorizontal, MetricsMod} from './index';
-// local imports
+import {Dimensions} from 'react-native';
+import {scale} from 'react-native-size-matters';
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
 const WINDOW_HEIGHT = Dimensions.get('window').height;
@@ -217,25 +214,6 @@ const navThemeConstants = {
   main: '#3875e8',
 };
 
-const imageSet = {
-  shopertinoLogo: Images.shopertinoLogo,
-  boederImgSend: Images.boederImgSend,
-  boederImgReceive: Images.boederImgReceive,
-  textBoederImgSend: Images.textBoederImgSend,
-  textBoederImgReceive: Images.textBoederImgReceive,
-  chat: Images.chat_icon,
-  file: Images.file,
-  like: Images.like_icon,
-  notification: Images.notification_icon,
-  photo: Images.photo,
-  pin: Images.pin,
-  video: Images.video,
-  audio: Images.audio,
-  audioPlay: Images.audioPlay_icon,
-  videoPlay: Images.videoPlay,
-  clock: Images.clock_icon,
-};
-
 const fontFamily = {
   robotoBlack: 'Roboto-Black',
   robotoBlackItalic: 'Roboto-BlackItalic',
@@ -249,7 +227,7 @@ const fontFamily = {
   robotoThinItalic: 'Roboto-ThinItalic',
   robotoMedium: 'Roboto-Medium',
   robotoMediumItalic: 'Roboto-MediumItalic',
-}
+};
 
 const fontSet = {
   xxxxlarge: scale(50),
@@ -297,139 +275,6 @@ const sizeSet = {
   radius: 25,
 };
 
-const styleSet = {
-  menuBtn: {
-    container: {
-      backgroundColor: colorSet.grayBgColor,
-      borderRadius: 22.5,
-      padding: 10,
-      marginLeft: 10,
-      marginRight: 10,
-    },
-    icon: {
-      tintColor: 'black',
-      width: 15,
-      height: 15,
-    },
-  },
-  searchBar: {
-    container: {
-      marginLeft: Platform.OS === 'ios' ? 30 : 0,
-      backgroundColor: 'transparent',
-      borderBottomColor: 'transparent',
-      borderTopColor: 'transparent',
-      flex: 1,
-    },
-    input: {
-      backgroundColor: colorSet.inputBgColor,
-      borderRadius: 10,
-      color: 'black',
-    },
-  },
-  rightNavButton: {
-    marginRight: 10,
-  },
-  borderRadius: {
-    main: 25,
-    small: 5,
-  },
-  textInputWidth: {
-    main: '80%',
-  },
-  bottomRightActionBtn: {
-    position: 'absolute',
-    right: moderateScale(20),
-    bottom: moderateScale(20),
-  },
-  background: {
-    width: WINDOW_WIDTH,
-    height: WINDOW_HEIGHT,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colorSet.purple,
-  },
-  input: {
-    minHeight: moderateScale(45),
-    paddingHorizontal: moderateScale(15),
-  },
-  inputMultiLine: {
-    minHeight: moderateScale(45),
-    paddingHorizontal: moderateScale(15),
-    ...Platform.select({
-      ios: {
-        paddingTop: moderateScale(10),
-      },
-    }),
-  },
-  listContentContainer: {
-    flexGrow: 1,
-  },
-  settingsCommon: {
-    fontSize: fontSet.small,
-    color: colorSet.greyishIV,
-    backgroundColor: 'transparent',
-    textAlignVertical: 'center',
-    paddingVertical: MetricsMod.baseMarginIII,
-    paddingHorizontal: MetricsHorizontal.marginFifteen,
-    textTransform: 'uppercase',
-  },
-  settingTopBottomWidth: {
-    marginTop: MetricsMod.baseMarginII,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: colorSet.dividerColor,
-    backgroundColor: colorSet.white,
-  },
-  settingSectionTopMargin: {
-    marginTop: MetricsMod.fortyTwo,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: colorSet.dividerColor,
-    backgroundColor: colorSet.white,
-  },
-  settingCommonBackground: {
-    flex: 1,
-    backgroundColor: colorSet.offWhite,
-  },
-  settingCommonTitleStyle: {
-    fontSize: fontSet.small,
-    color: colorSet.greyishIV,
-    textTransform: 'uppercase',
-    marginLeft: scale(15),
-  },
-  settingCommonMarginTop: {
-    marginTop: MetricsMod.twentyEight,
-  },
-  settingCommonSearchContainer: {
-    marginVertical: MetricsMod.marginFifteen,
-  },
-  settingCommonListItem: {
-    color: colorSet.blackN,
-    fontFamily: fontFamily.proximaRegular,
-    fontSize: fontSet.small,
-  },
-  settingCommonListLeftRightItem: {
-    flex: 1,
-    color: colorSet.blackN,
-    fontSize: fontSet.small,
-    fontFamily: fontFamily.proximaRegular,
-  },
-  borderTop: {
-    borderTopWidth: MetricsMod.horizontalLineHeight,
-    borderTopColor: colorSet.dividerColor,
-  },
-  borderBottom: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colorSet.dividerColor,
-  },
-  borderTopBottom: {
-    borderBottomWidth: MetricsMod.horizontalLineHeight,
-    borderBottomColor: colorSet.dividerColor,
-    borderTopWidth: MetricsMod.horizontalLineHeight,
-    borderTopColor: colorSet.dividerColor,
-  },
-};
-
 const requestType = {
   REQUEST_NONE: 0,
   REQUEST_TO_HIM: 1,
@@ -453,13 +298,11 @@ friendActions[requestType.FRIEND] = actionObj.UNFRIEND;
 friendActions[requestType.PENDING_FRIEND] = actionObj.ACCEPT;
 
 const StyleDict = {
-  imageSet,
   fontFamily,
   colorSet,
   navThemeConstants,
   fontSet,
   sizeSet,
-  styleSet,
   loadingModal,
   WINDOW_WIDTH,
   WINDOW_HEIGHT,

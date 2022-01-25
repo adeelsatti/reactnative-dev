@@ -1,55 +1,76 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import _ from 'lodash';
 
 import styles from './styles';
-import image1 from '../../../assets/Images/Ellipse1.png';
-import image2 from '../../../assets/Images/Ellipse2.png';
 import InputComponent from '../../components/InputComponent';
 import ButtonComponent from '../../components/ButtonComponent';
-import {AUTH_SCREENS, MAIN_SCREENS} from '../../constants/screen';
-import {AppStyles} from '../../themes';
+import {AUTH_SCREENS} from '../../constants/screen';
+import {AppStyles, Images} from '../../themes';
 import {loginValidationSchema} from '../../Schema/LoginSchema';
-import {is_Login, is_Support} from '../../redux/Actions/AuthActions';
+import {
+  is_Login,
+  is_Support,
+  resetError,
+} from '../../redux/Actions/AuthActions';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const _ = require('lodash');
   const [loginAttempts, setLoginAttempts] = useState(4);
   const [loading, setLoading] = useState(false);
 
   const userData = useSelector(state => state?.users);
   const users = userData?.users;
+
   const dispatch = useDispatch();
 
   const onSignUp = () => {
     navigation.navigate(AUTH_SCREENS.SIGNUP);
   };
 
-  const waitFor = values => {
+  const LoginUser = values => {
     users?.map(user => {
       if (
         user?.email === values?.email &&
         user?.password === values?.password
       ) {
         dispatch(is_Login(true));
-        navigation.navigate(MAIN_SCREENS.HOME);
+        setLoading(false);
       }
     });
-    if (loginAttempts === 0) {
-      dispatch(is_Support(true));
-      navigation.navigate(AUTH_SCREENS.CUSTOMSUPPORT);
-    }
+
     setLoginAttempts(loginAttempts - 1);
     setLoading(false);
   };
 
+  /* useEffect(() => {
+    showToast();
+  }, []);
+
+  const showToast = () => {
+    Toast.show({
+      type: 'error',
+      text1: 'Is Connected?',
+      text2: 'go',
+    });
+  };*/
+
+  useEffect(() => {
+    if (!loginAttempts) {
+      dispatch(is_Support(true));
+      setLoading(false);
+      navigation.navigate(AUTH_SCREENS.CUSTOMSUPPORT);
+    }
+    dispatch(resetError());
+  }, [loginAttempts]);
+
   const checkAccount = values => {
     setLoading(true);
-    _.delay(async () => await waitFor(values), 5000);
+    _.delay(async () => await LoginUser(values), 5000);
   };
 
   return (
@@ -71,9 +92,15 @@ const LoginScreen = () => {
         <SafeAreaView style={styles.mainContainer}>
           <KeyboardAwareScrollView>
             <View style={styles.imageContainer}>
-              <Image source={image1} style={styles.ovalShapeViewOrange} />
+              <Image
+                source={Images.ellipseImage1}
+                style={styles.ovalShapeViewOrange}
+              />
               <Text style={styles.welcomeText}>Welcome Back</Text>
-              <Image source={image2} style={styles.ovalShapeViewGreen} />
+              <Image
+                source={Images.ellipseImage2}
+                style={styles.ovalShapeViewGreen}
+              />
             </View>
 
             <InputComponent
