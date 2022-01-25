@@ -10,6 +10,7 @@ const InputComponent = props => {
     secureTextEntry,
     placeholderTextColor,
     touched,
+    onBlur,
     errors,
     errorText,
     onSubmitEditing,
@@ -25,6 +26,7 @@ const InputComponent = props => {
         placeholderTextColor={placeholderTextColor}
         onChangeText={onChangeText}
         style={[inputStyle]}
+        onBlur={onBlur}
         onSubmitEditing={onSubmitEditing}
         secureTextEntry={secureTextEntry}
         returnKeyType={returnKeyType}

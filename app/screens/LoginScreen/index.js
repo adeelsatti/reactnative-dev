@@ -5,6 +5,7 @@ import {Formik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import _ from 'lodash';
+import Toast from 'react-native-toast-message';
 
 import styles from './styles';
 import InputComponent from '../../components/InputComponent';
@@ -25,7 +26,6 @@ const LoginScreen = () => {
 
   const userData = useSelector(state => state?.users);
   const users = userData?.users;
-
   const dispatch = useDispatch();
 
   const onSignUp = () => {
@@ -38,39 +38,41 @@ const LoginScreen = () => {
         user?.email === values?.email &&
         user?.password === values?.password
       ) {
+        Toast.show({
+          type: 'success',
+          text1: 'Successfully Login',
+          text2: 'You can access you account',
+        });
+
         dispatch(is_Login(true));
         setLoading(false);
       }
     });
 
-    setLoginAttempts(loginAttempts - 1);
-    setLoading(false);
-  };
-
-  /* useEffect(() => {
-    showToast();
-  }, []);
-
-  const showToast = () => {
     Toast.show({
       type: 'error',
-      text1: 'Is Connected?',
-      text2: 'go',
+      text1: 'Login Faild',
+      text2: 'Enter correct email or password',
     });
-  };*/
+    setLoginAttempts(attempt => attempt - 1);
+    setLoading(false);
+  };
 
   useEffect(() => {
     if (!loginAttempts) {
       dispatch(is_Support(true));
       setLoading(false);
-      navigation.navigate(AUTH_SCREENS.CUSTOMSUPPORT);
     }
     dispatch(resetError());
-  }, [loginAttempts]);
+  }, []);
 
   const checkAccount = values => {
     setLoading(true);
-    _.delay(async () => await LoginUser(values), 5000);
+    _.delay(async () => await LoginUser(values), 1000);
+  };
+
+  const onForgetPassword = () => {
+    navigation.navigate(AUTH_SCREENS.FORGETPASSWORD);
   };
 
   return (
@@ -135,7 +137,9 @@ const LoginScreen = () => {
               returnKeyLabel="next"
             />
 
-            <TouchableOpacity style={styles.forgetButton}>
+            <TouchableOpacity
+              style={styles.forgetButton}
+              onPress={onForgetPassword}>
               <Text style={styles.forgetText}>Forget Password ?</Text>
             </TouchableOpacity>
 

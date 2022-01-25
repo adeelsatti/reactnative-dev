@@ -32,7 +32,7 @@ export default StyleSheet.create({
     backgroundColor: AppStyles.colorSet.orange,
   },
   backButton: {
-    marginTop: MetricsMod.twenty,
+    marginTop: MetricsMod.six,
     padding: MetricsMod.twelve,
   },
   createAccountText: {
@@ -42,7 +42,6 @@ export default StyleSheet.create({
     color: AppStyles.colorSet.white,
     marginHorizontal: MetricsMod.twenty,
     marginTop: MetricsMod.six,
-    width: 144,
   },
   textInputName: {
     borderBottomWidth: 1,
@@ -101,9 +100,8 @@ export default StyleSheet.create({
   radioContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingHorizontal: MetricsMod.twenty,
-    marginTop: MetricsMod.twelve,
+    justifyContent: 'space-evenly',
+    marginTop: MetricsMod.six,
   },
   genderText: {
     fontSize: AppStyles.fontSet.medium,
@@ -118,8 +116,8 @@ export default StyleSheet.create({
   },
   datePicker: {
     marginHorizontal: MetricsMod.thirty,
-    width: MetricsMod.threeHundredFifteen,
-    marginTop: MetricsMod.twelve,
+    marginTop: MetricsMod.six,
+    width: '85%',
   },
   dateIcon: {
     borderColor: 'gray',

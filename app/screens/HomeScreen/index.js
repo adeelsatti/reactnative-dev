@@ -31,6 +31,7 @@ const HomeScreen = () => {
   const onLogout = () => {
     dispatch(is_Login(false));
   };
+
   const onRenderUsers = ({item}) => {
     return (
       <View style={styles.mainItemContainer}>

@@ -5,6 +5,7 @@ const InitialState = {
   is_LogIn: false,
   error: 'error duplicate email',
   is_Support: false,
+  recoveries: {},
 };
 
 export const userReducer = (state = InitialState, action) => {
@@ -41,6 +42,16 @@ export const userReducer = (state = InitialState, action) => {
       return {
         ...state,
         error: '',
+      };
+    }
+    case Action.FORGOT_PASSWORD: {
+      const obj = action?.payload;
+      const obj2 = state?.recoveries;
+      const merge = (...objects) => ({...objects});
+      let recover = merge(obj2, obj);
+      return {
+        ...state,
+        recoveries: recover,
       };
     }
 

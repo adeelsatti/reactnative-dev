@@ -10,9 +10,5 @@ export default StyleSheet.create({
   loading: {
     marginTop: MetricsMod.thirty,
   },
-  notFoundImage: {
-    flex: 1,
-    resizeMode: 'contain',
-    paddingHorizontal: 20,
-  },
+  notFoundImage: {},
 });

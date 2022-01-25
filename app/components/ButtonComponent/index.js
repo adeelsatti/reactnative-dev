@@ -12,7 +12,7 @@ const ButtonComponent = props => {
     disabled,
     buttonStyleWrapper,
     buttonText,
-    isRightIcon = false,
+    isRightIcon,
     iconType,
     iconName,
     iconSize,
