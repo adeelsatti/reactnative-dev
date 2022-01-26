@@ -12,10 +12,10 @@ export const userReducer = (state = InitialState, action) => {
   switch (action.type) {
     case Action.CREATE_USER: {
       const duplicateEmail = state?.users?.find(
-        user => user?.email === action?.payload?.email,
+        user => user?.email === action?.payload?.mail,
       );
 
-      if (duplicateEmail) {
+      if (Boolean(duplicateEmail)) {
         return {
           ...state,
           error: 'Email already Exist Kindly Signup with Different Email',
@@ -23,7 +23,9 @@ export const userReducer = (state = InitialState, action) => {
       }
 
       if (!duplicateEmail) {
-        return {...state, users: [...(state?.users ?? []), action?.payload]};
+        const id = state?.users?.length + 1;
+        const addUser = {...action?.payload, id};
+        return {...state, users: [...(state?.users ?? []), addUser]};
       }
     }
     case Action.IS_LOGIN: {
@@ -47,8 +49,7 @@ export const userReducer = (state = InitialState, action) => {
     case Action.FORGOT_PASSWORD: {
       const obj = action?.payload;
       const obj2 = state?.recoveries;
-      const merge = (...objects) => ({...objects});
-      let recover = merge(obj2, obj);
+      let recover = {...obj2, ...obj};
       return {
         ...state,
         recoveries: recover,

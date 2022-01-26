@@ -30,6 +30,6 @@ export const resetError = () => {
 export const recoverPassword = (email, key) => {
   return {
     type: Action.FORGOT_PASSWORD,
-    payload: {email: email, key: key},
+    payload: {[email]: key},
   };
 };

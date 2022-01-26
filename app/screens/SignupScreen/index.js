@@ -28,7 +28,6 @@ const SignupScreen = () => {
   const [loading, setLoading] = useState(false);
 
   let initialValues = {
-    id: Math.floor(Math.random() * 1000) + 1,
     profileImage: '',
     fName: '',
     lName: '',
@@ -53,8 +52,9 @@ const SignupScreen = () => {
       height: 400,
       cropping: true,
     });
-    setImage({uri: img?.path});
-    handleChange(image?.uri);
+    const imageCamera = {uri: img?.path};
+    setImage(imageCamera);
+    handleChange(imageCamera?.uri);
     setModal(false);
   };
 
@@ -64,9 +64,10 @@ const SignupScreen = () => {
       height: 400,
       cropping: true,
     });
-    setImage({uri: img?.path});
-    handleChange(image.uri);
+    const imageCamera = {uri: img?.path};
+    setImage(imageCamera);
     setModal(false);
+    handleChange(imageCamera?.uri);
   };
 
   const handleModal = () => {
@@ -86,27 +87,33 @@ const SignupScreen = () => {
   };
 
   const addUser = values => {
-    let {phone, confirmPassword, ...value} = values;
+    let {phone, confirmPassword, profileImage, email, ...value} = values;
     const phoneNumber = phone.replace(/[^\d]/g, '');
-    const newValues = {...value, phoneNumber};
+    const mail = email.toLowerCase();
 
-    dispatch(addNewUser(newValues));
-    setLoading(false);
+    if (!profileImage) {
+      const newValues = {...value, mail, phoneNumber};
+      dispatch(addNewUser(newValues));
+      console.log(newValues);
+      setLoading(false);
+    } else {
+      const newValues = {...value, mail, profileImage, phoneNumber};
+      dispatch(addNewUser(newValues));
+      console.log(newValues);
+      setLoading(false);
+    }
   };
 
-  const dispatchUser = async values => {
+  const dispatchUser = values => {
     setLoading(true);
-    _.delay(async () => await addUser(values), 1000);
+    _.delay(() => addUser(values), 1000);
   };
 
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={(values, {resetForm}) => {
-        dispatchUser(values);
-        resetForm(initialValues);
-      }}
-      validationSchema={signUpValidationSchema}>
+      validationSchema={signUpValidationSchema}
+      onSubmit={async values => await dispatchUser(values)}>
       {({
         values,
         handleChange,
@@ -219,11 +226,11 @@ const SignupScreen = () => {
               <View style={styles.radioContainer}>
                 <View>
                   <Text style={styles.genderText}>Male</Text>
-                  <RadioButton value="Male" />
+                  <RadioButton value="M" />
                 </View>
                 <View>
                   <Text style={styles.genderText}>Female</Text>
-                  <RadioButton value="Female" />
+                  <RadioButton value="F" />
                 </View>
               </View>
             </RadioButton.Group>
@@ -269,7 +276,7 @@ const SignupScreen = () => {
               placeholder="Select date"
               format="DD/MM/YYYY"
               minDate="01-01-1950"
-              maxDate="01-01-2000"
+              maxDate={new Date()}
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"
               customStyles={{
@@ -338,7 +345,7 @@ const SignupScreen = () => {
 
           <View style={styles.handleSignupText}>
             <Text style={styles.haveAnSignupAccountText}>
-              Don't hava an account ?
+              Don't have an account ?
             </Text>
             <TouchableOpacity onPress={onSignIn}>
               <Text style={styles.signinButton}>SIGN IN</Text>

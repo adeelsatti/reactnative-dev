@@ -18,9 +18,7 @@ export const signUpValidationSchema = yup?.object()?.shape({
         .oneOf([yup?.ref('password')], 'Both password need to be same'),
     })
     .required('Confirm Password Required'),
-  gender: yup
-    ?.boolean()
-    ?.oneOf([0, 1], 'Selecting the gender field is required'),
+  gender: yup?.string()?.required(),
   phone: yup?.string()?.min(11)?.required(),
   dob: yup?.string()?.required(),
 });

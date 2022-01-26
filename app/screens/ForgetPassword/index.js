@@ -6,6 +6,7 @@ import {Formik} from 'formik';
 import uuid from 'react-native-uuid';
 import {useDispatch, useSelector} from 'react-redux';
 import _ from 'lodash';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
 import {AppStyles, Images} from '../../themes';
 import styles from './styles';
@@ -18,6 +19,8 @@ import {AUTH_SCREENS} from '../../constants/screen';
 
 const ForgetPassword = () => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(true);
+
   const navigation = useNavigation();
   const usersState = useSelector(state => state?.users);
   const users = usersState?.users;
@@ -26,6 +29,7 @@ const ForgetPassword = () => {
   const initialValues = {email: ''};
   const key = uuid.v4();
 
+  console.log(error);
   const handleBackButton = () => {
     navigation.goBack();
   };
@@ -40,12 +44,20 @@ const ForgetPassword = () => {
       if (user.email === values?.email) {
         dispatch(recoverPassword(user?.email, key));
         setLoading(false);
-        navigation.navigate(AUTH_SCREENS.RESETPASSWORD, {
-          password: user?.password,
-          email: user?.email,
-        });
+        setError(false);
+        navigation.navigate(AUTH_SCREENS.RESETPASSWORD);
       }
     });
+    {
+      Boolean(error) &&
+        Toast.show({
+          type: 'error',
+          text1: 'invalid email',
+          text2: 'Email not match kindly check your email',
+        });
+    }
+    setLoading(false);
+    setError(true);
   };
 
   return (

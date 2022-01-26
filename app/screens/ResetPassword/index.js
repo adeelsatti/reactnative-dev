@@ -3,7 +3,7 @@ import {Alert, Image, SafeAreaView, Text, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Formik} from 'formik';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import _ from 'lodash';
 
 import {AppStyles, Images} from '../../themes';
@@ -11,7 +11,7 @@ import styles from './styles';
 import VectorIcon from '../../components/VectorIcon';
 import InputComponent from '../../components/InputComponent';
 import ButtonComponent from '../../components/ButtonComponent';
-import {ResetPasswordSchema} from '../../Schema/ForgotPasswordSchema';
+import {ResetPasswordSchema} from '../../Schema/ResetPasswordSchema';
 import {AUTH_SCREENS} from '../../constants/screen';
 
 const ResetPassword = props => {
@@ -20,10 +20,16 @@ const ResetPassword = props => {
 
   const usersState = useSelector(state => state?.users);
   const recoverPasswordEmail = usersState?.recoveries;
+  const users = usersState?.users;
   const data = props?.route?.params;
 
-  console.log(usersState?.recoveries);
-  const initialValues = {code: ''};
+  const keys = Object.keys(recoverPasswordEmail);
+  const val = Object.values(recoverPasswordEmail);
+  const response = keys.map((email, i) => {
+    return {email: email, code: val[i]};
+  });
+
+  const initialValues = {email: '', code: ''};
 
   const handleBackButton = () => {
     navigation.goBack();
@@ -35,13 +41,21 @@ const ResetPassword = props => {
   };
 
   const checkCode = values => {
-    if (recoverPasswordEmail?.key === values?.code) {
-      setLoading(false);
-      Alert?.alert('Your password is this:', data?.password);
-      navigation.navigate(AUTH_SCREENS.LOGIN);
-    }
-    Alert.alert('Code not match', recoverPasswordEmail?.key);
-    navigation.navigate(AUTH_SCREENS.LOGIN);
+    response?.map(recovervalue => {
+      if (
+        recovervalue?.code === values?.code &&
+        recovervalue?.email === values?.email
+      ) {
+        users?.map(user => {
+          if (user?.email === values?.email) {
+            Alert?.alert('Your Password is :', user?.password);
+            setLoading(false);
+            navigation.navigate(AUTH_SCREENS.LOGIN);
+          }
+        });
+      }
+    });
+    //navigation.navigate(AUTH_SCREENS.LOGIN);
     setLoading(false);
   };
 
@@ -81,6 +95,19 @@ const ResetPassword = props => {
                 An email with a verification code {'\n'} was just sent to{' '}
                 {data?.email}
               </Text>
+
+              <InputComponent
+                value={values?.email}
+                placeholder="Enter email"
+                autoFocus={true}
+                onChangeText={handleChange('email')}
+                onBlur={() => setFieldTouched('email')}
+                inputStyle={styles.inputStyle}
+                placeholderTextColor={AppStyles.colorSet.silver}
+                touched={touched?.email}
+                errors={errors?.email}
+                errorText={styles.errorText}
+              />
 
               <InputComponent
                 value={values?.code}

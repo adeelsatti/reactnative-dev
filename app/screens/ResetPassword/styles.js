@@ -28,10 +28,10 @@ export default StyleSheet.create({
     alignSelf: 'center',
   },
   bodyContainer: {
-    marginTop: MetricsMod.forty,
+    marginTop: MetricsMod.twenty,
   },
   description: {
-    marginTop: MetricsMod.forty,
+    marginTop: MetricsMod.twenty,
     color: AppStyles.colorSet.white,
     fontFamily: AppStyles.fontFamily.robotoBold,
     fontSize: AppStyles.fontSet.normal,
@@ -44,7 +44,7 @@ export default StyleSheet.create({
     marginHorizontal: MetricsMod.thirty,
     color: AppStyles.colorSet.black,
     fontSize: AppStyles.fontSet.xmiddle,
-    marginTop: MetricsMod.forty,
+    marginTop: MetricsMod.twenty,
     paddingHorizontal: MetricsMod.twelve,
   },
   buttonSendEmail: {
@@ -55,7 +55,7 @@ export default StyleSheet.create({
     marginHorizontal: MetricsMod.thirty,
     borderRadius: MetricsMod.twelve,
     justifyContent: 'center',
-    marginTop: MetricsMod.forty,
+    marginTop: MetricsMod.twenty,
   },
   buttonText: {
     color: AppStyles.colorSet.white,

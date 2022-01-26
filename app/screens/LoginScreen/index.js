@@ -28,6 +28,7 @@ const LoginScreen = () => {
   const users = userData?.users;
   const dispatch = useDispatch();
 
+  console.log(users);
   const onSignUp = () => {
     navigation.navigate(AUTH_SCREENS.SIGNUP);
   };
