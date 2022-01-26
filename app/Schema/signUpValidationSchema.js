@@ -9,7 +9,16 @@ export const signUpValidationSchema = yup?.object()?.shape({
     ?.min(4)
     ?.max(10, 'Password should not exceed 10 chars.')
     ?.required(),
-  checked: yup
+  confirmPassword: yup
+    ?.string()
+    .when('password', {
+      is: val => (val.length > 0 ? true : false),
+      then: yup
+        ?.string()
+        .oneOf([yup?.ref('password')], 'Both password need to be same'),
+    })
+    .required('Confirm Password Required'),
+  gender: yup
     ?.boolean()
     ?.oneOf([0, 1], 'Selecting the gender field is required'),
   phone: yup?.string()?.min(11)?.required(),

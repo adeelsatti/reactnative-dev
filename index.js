@@ -6,6 +6,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 
 import App from './app/App';
 import {name as appName} from './app.json';
+import './app/config/ReactotronConfig';
 
 const {store, persistor} = configureStore();
 const RNRedux = () => {

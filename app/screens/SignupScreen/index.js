@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import ImageCropPicker from 'react-native-image-crop-picker';
@@ -13,13 +13,12 @@ import DatePicker from 'react-native-datepicker';
 import _ from 'lodash';
 
 import styles from './styles';
-import uploadImage from '../../../assets/Images/uploadImage.png';
 import VectorIcon from '../../components/VectorIcon';
 import {AppStyles, Images} from '../../themes';
 import InputComponent from '../../components/InputComponent';
 import ButtonComponent from '../../components/ButtonComponent';
 import {signUpValidationSchema} from '../../Schema/signUpValidationSchema';
-import {addNewUser} from '../../redux/Actions/AuthActions';
+import {addNewUser, resetError} from '../../redux/Actions/AuthActions';
 import {AUTH_SCREENS} from '../../constants/screen';
 
 const SignupScreen = () => {
@@ -28,46 +27,45 @@ const SignupScreen = () => {
   const [modal, setModal] = useState();
   const [loading, setLoading] = useState(false);
 
-  /*const selectDOBText = 'Select DOB';
-  const getCurrentDate = moment('12-25-1995', 'MM-DD-YYYY');
-  const initialDate = getCurrentDate
-    ?.toISOString()
-    ?.replace('-', '/')
-    ?.split('T')[0]
-    ?.replace('-', '/');*/
-
   let initialValues = {
     id: Math.floor(Math.random() * 1000) + 1,
-    profileImage: '' ?? uploadImage,
+    profileImage: '',
     fName: '',
     lName: '',
     email: '',
     password: '',
+    confirmPassword: '',
     gender: '',
     phone: '',
     dob: '',
   };
 
   const dispatch = useDispatch();
-  const emailError = useSelector(state => state?.users);
+  const duplicateEmailError = useSelector(state => state?.users?.error);
 
-  const captureImage = async () => {
+  useEffect(() => {
+    dispatch(resetError());
+  }, []);
+
+  const captureImage = async handleChange => {
     const img = await ImageCropPicker.openCamera({
       width: 300,
       height: 400,
       cropping: true,
     });
     setImage({uri: img?.path});
+    handleChange(image?.uri);
     setModal(false);
   };
 
-  const galleryImage = async () => {
+  const galleryImage = async handleChange => {
     const img = await ImageCropPicker.openPicker({
       width: 300,
       height: 400,
       cropping: true,
     });
-    setImage(img);
+    setImage({uri: img?.path});
+    handleChange(image.uri);
     setModal(false);
   };
 
@@ -88,20 +86,26 @@ const SignupScreen = () => {
   };
 
   const addUser = values => {
-    dispatch(addNewUser(values));
+    let {phone, confirmPassword, ...value} = values;
+    const phoneNumber = phone.replace(/[^\d]/g, '');
+    const newValues = {...value, phoneNumber};
+
+    dispatch(addNewUser(newValues));
     setLoading(false);
-    navigation.navigate(AUTH_SCREENS.LOGIN);
   };
 
   const dispatchUser = async values => {
     setLoading(true);
-    _.delay(async () => await addUser(values), 5000);
+    _.delay(async () => await addUser(values), 1000);
   };
 
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={values => dispatchUser(values)}
+      onSubmit={(values, {resetForm}) => {
+        dispatchUser(values);
+        resetForm(initialValues);
+      }}
       validationSchema={signUpValidationSchema}>
       {({
         values,
@@ -124,7 +128,7 @@ const SignupScreen = () => {
               onPress={onGoBack}
             />
 
-            <Text style={styles.createAccountText}>Create Account</Text>
+            <Text style={styles.createAccountText}>Create {'\n'}Account</Text>
 
             <TouchableOpacity onPress={handleModal} style={styles.uploadImage}>
               <Image
@@ -132,6 +136,10 @@ const SignupScreen = () => {
                 style={styles.uploadImage}
               />
             </TouchableOpacity>
+            {Boolean(duplicateEmailError) && (
+              <Text style={styles.errorSignupText}>{duplicateEmailError}</Text>
+            )}
+
             <InputComponent
               placeholder="First Name"
               placeholderTextColor={AppStyles.colorSet.white}
@@ -184,6 +192,21 @@ const SignupScreen = () => {
               secureTextEntry={true}
               touched={touched?.password}
               errors={errors?.password}
+              errorText={styles.errorSignupText}
+              returnKeyType="next"
+              returnKeyLabel="next"
+            />
+
+            <InputComponent
+              placeholder="Confirm Password"
+              placeholderTextColor={AppStyles.colorSet.white}
+              value={values.confirmPassword}
+              onChangeText={handleChange('confirmPassword')}
+              onBlur={() => setFieldTouched('confirmPassword')}
+              inputStyle={styles.textInputName}
+              secureTextEntry={true}
+              touched={touched?.confirmPassword}
+              errors={errors?.confirmPassword}
               errorText={styles.errorSignupText}
               returnKeyType="next"
               returnKeyLabel="next"
@@ -243,9 +266,9 @@ const SignupScreen = () => {
               date={values?.dob}
               initialValue={new Date(moment('1994/1/1', 'DD-MM-YYYY'))}
               mode="date"
-              placeholder="select date"
+              placeholder="Select date"
               format="DD/MM/YYYY"
-              minDate="01-01-1900"
+              minDate="01-01-1950"
               maxDate="01-01-2000"
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"
@@ -284,11 +307,13 @@ const SignupScreen = () => {
               onBackdropPress={() => setModal(false)}>
               <View style={styles.modalContainer}>
                 <Text style={styles.selectImage}>Select Image</Text>
-                <TouchableOpacity onPress={captureImage}>
+                <TouchableOpacity
+                  onPress={() => captureImage(handleChange('profileImage'))}>
                   <Text style={styles.cameraOption}>Take Photo...</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={galleryImage}>
+                <TouchableOpacity
+                  onPress={() => galleryImage(handleChange('profileImage'))}>
                   <Text style={styles.cameraOption}>
                     Choose from Library...
                   </Text>

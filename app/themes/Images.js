@@ -8,5 +8,6 @@ const Images = {
   networkError: require('../../assets/Images/networkError.png'),
   logoutIcon: require('../../assets/Images/logout.png'),
   noInternet: require('../../assets/Images/noInternet.png'),
+  forgotPassword: require('../../assets/Images/forgotpasword.png'),
 };
 export default Images;

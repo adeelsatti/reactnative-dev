@@ -24,10 +24,7 @@ const ThreeDotsMenu = () => {
       </MenuTrigger>
       <MenuOptions optionsContainerStyle={styles.ContainerStyle}>
         <MenuOption>
-          <Text style={styles.menuOption}>Update</Text>
-        </MenuOption>
-        <MenuOption>
-          <Text style={styles.menuOption}>Delete</Text>
+          <Text style={styles.menuOption}>Edit</Text>
         </MenuOption>
       </MenuOptions>
     </Menu>

@@ -2,7 +2,13 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import {AUTH_SCREENS} from '../../constants/screen';
-import {CustomSupport, LoginScreen, SignupScreen} from '../../screens';
+import {
+  CustomSupport,
+  ForgetPassword,
+  LoginScreen,
+  ResetPassword,
+  SignupScreen,
+} from '../../screens';
 import {useSelector} from 'react-redux';
 
 const Stack = createNativeStackNavigator();
@@ -23,6 +29,16 @@ export const Auth_Screen = () => {
           <Stack.Screen
             name={AUTH_SCREENS.SIGNUP}
             component={SignupScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name={AUTH_SCREENS.FORGETPASSWORD}
+            component={ForgetPassword}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name={AUTH_SCREENS.RESETPASSWORD}
+            component={ResetPassword}
             options={{headerShown: false}}
           />
         </>
