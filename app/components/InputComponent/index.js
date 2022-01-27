@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {forwardRef} from 'react';
 import {Text, TextInput} from 'react-native';
 
-const InputComponent = props => {
+const InputComponent = (props, ref) => {
   const {
     placeholder,
     value,
@@ -15,7 +15,9 @@ const InputComponent = props => {
     errorText,
     onSubmitEditing,
     returnKeyType,
+    blurOnSubmit,
     returnKeyLabel,
+    onKeyPress,
   } = props;
 
   return (
@@ -31,6 +33,9 @@ const InputComponent = props => {
         secureTextEntry={secureTextEntry}
         returnKeyType={returnKeyType}
         returnKeyLabel={returnKeyLabel}
+        onKeyPress={onKeyPress}
+        ref={ref}
+        blurOnSubmit={blurOnSubmit}
       />
       {Boolean(touched) && Boolean(errors) && (
         <Text style={errorText}>{errors}</Text>
@@ -38,4 +43,4 @@ const InputComponent = props => {
     </>
   );
 };
-export default InputComponent;
+export default forwardRef(InputComponent);

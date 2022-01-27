@@ -24,7 +24,6 @@ const HomeScreen = () => {
   const {loading, error, data} = useApiFetch(
     'https://jsonplaceholder.typicode.com/posts',
   );
-  console.log(error);
 
   const dispatch = useDispatch();
 
@@ -94,9 +93,6 @@ const HomeScreen = () => {
       />
       <FloatingAction
         actions={FloatingButtonAction}
-        onPressItem={item => {
-          console.log(`Selected Button' ${item}`);
-        }}
         color={AppStyles.colorSet.orange}
       />
     </SafeAreaView>

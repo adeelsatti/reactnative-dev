@@ -21,9 +21,10 @@ export const is_Support = value => {
   };
 };
 
-export const resetError = () => {
+export const resetError = error => {
   return {
     type: Action.RESET_ERROR,
+    payload: error,
   };
 };
 
@@ -31,5 +32,12 @@ export const recoverPassword = (email, key) => {
   return {
     type: Action.FORGOT_PASSWORD,
     payload: {[email]: key},
+  };
+};
+
+export const block_User = values => {
+  return {
+    type: Action.BLOCKED_USER,
+    payload: values,
   };
 };

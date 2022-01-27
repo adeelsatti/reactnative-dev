@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {RadioButton} from 'react-native-paper';
 import ImageCropPicker from 'react-native-image-crop-picker';
@@ -26,25 +26,34 @@ const SignupScreen = () => {
   const [image, setImage] = useState();
   const [modal, setModal] = useState();
   const [loading, setLoading] = useState(false);
-
-  let initialValues = {
-    profileImage: '',
-    fName: '',
-    lName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    gender: '',
-    phone: '',
-    dob: '',
-  };
+  const inputRef = useRef();
+  const nextRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const confirmPasswordRef = useRef();
+  const phoneRef = useRef();
+  const dobRef = useRef();
 
   const dispatch = useDispatch();
   const duplicateEmailError = useSelector(state => state?.users?.error);
+  const users = useSelector(state => state?.users.users);
+  const lastUser = users[users.length - 1];
+
+  let initialValues = {
+    profileImage: '',
+    fName: lastUser?.fName,
+    lName: lastUser?.lName,
+    email: lastUser?.mail,
+    password: lastUser?.password,
+    confirmPassword: lastUser?.confirmPassword,
+    gender: lastUser?.gender,
+    phone: lastUser?.phoneNumber,
+    dob: lastUser?.dob,
+  };
 
   useEffect(() => {
     dispatch(resetError());
-  }, []);
+  }, [lastUser]);
 
   const captureImage = async handleChange => {
     const img = await ImageCropPicker.openCamera({
@@ -70,6 +79,11 @@ const SignupScreen = () => {
     handleChange(imageCamera?.uri);
   };
 
+  const removeImage = handleChange => {
+    handleChange(image);
+    setModal(false);
+  };
+
   const handleModal = () => {
     setModal(true);
   };
@@ -86,6 +100,10 @@ const SignupScreen = () => {
     setModal(false);
   };
 
+  const focus = input => {
+    input.current.focus();
+  };
+
   const addUser = values => {
     let {phone, confirmPassword, profileImage, email, ...value} = values;
     const phoneNumber = phone.replace(/[^\d]/g, '');
@@ -94,12 +112,10 @@ const SignupScreen = () => {
     if (!profileImage) {
       const newValues = {...value, mail, phoneNumber};
       dispatch(addNewUser(newValues));
-      console.log(newValues);
       setLoading(false);
     } else {
       const newValues = {...value, mail, profileImage, phoneNumber};
       dispatch(addNewUser(newValues));
-      console.log(newValues);
       setLoading(false);
     }
   };
@@ -113,7 +129,10 @@ const SignupScreen = () => {
     <Formik
       initialValues={initialValues}
       validationSchema={signUpValidationSchema}
-      onSubmit={async values => await dispatchUser(values)}>
+      onSubmit={(values, {resetForm}) => {
+        dispatchUser(values);
+        resetForm(initialValues);
+      }}>
       {({
         values,
         handleChange,
@@ -139,7 +158,7 @@ const SignupScreen = () => {
 
             <TouchableOpacity onPress={handleModal} style={styles.uploadImage}>
               <Image
-                source={image ?? Images.uploadImage}
+                source={image ?? {uri: lastUser?.profileImage}}
                 style={styles.uploadImage}
               />
             </TouchableOpacity>
@@ -149,7 +168,7 @@ const SignupScreen = () => {
 
             <InputComponent
               placeholder="First Name"
-              placeholderTextColor={AppStyles.colorSet.white}
+              placeholderTextColor={AppStyles.colorSet.black}
               value={values?.fName}
               onChangeText={handleChange('fName')}
               onBlur={() => setFieldTouched('fName')}
@@ -157,13 +176,16 @@ const SignupScreen = () => {
               errorText={styles.errorSignupText}
               touched={touched?.fName}
               errors={errors?.fName}
+              onSubmitEditing={() => focus(nextRef)}
               returnKeyType="next"
               returnKeyLabel="next"
+              ref={inputRef}
+              blurOnSubmit={false}
             />
 
             <InputComponent
               placeholder="Last Name"
-              placeholderTextColor={AppStyles.colorSet.white}
+              placeholderTextColor={AppStyles.colorSet.black}
               value={values?.lName}
               onChangeText={handleChange('lName')}
               onBlur={() => setFieldTouched('lName')}
@@ -171,27 +193,33 @@ const SignupScreen = () => {
               errorText={styles.errorSignupText}
               touched={touched?.lName}
               errors={errors?.lName}
+              ref={nextRef}
+              onSubmitEditing={() => focus(emailRef)}
               returnKeyType="next"
               returnKeyLabel="next"
+              blurOnSubmit={false}
             />
 
             <InputComponent
               placeholder="Email"
-              placeholderTextColor={AppStyles.colorSet.white}
+              placeholderTextColor={AppStyles.colorSet.black}
               value={values?.email}
               onChangeText={handleChange('email')}
               onBlur={() => setFieldTouched('email')}
               inputStyle={styles.textInputName}
               touched={touched?.email}
               errors={errors?.email}
+              ref={emailRef}
+              onSubmitEditing={() => focus(passwordRef)}
               errorText={styles.errorSignupText}
               returnKeyType="next"
               returnKeyLabel="next"
+              blurOnSubmit={false}
             />
 
             <InputComponent
               placeholder="Password"
-              placeholderTextColor={AppStyles.colorSet.white}
+              placeholderTextColor={AppStyles.colorSet.black}
               value={values.password}
               onChangeText={handleChange('password')}
               onBlur={() => setFieldTouched('password')}
@@ -200,13 +228,16 @@ const SignupScreen = () => {
               touched={touched?.password}
               errors={errors?.password}
               errorText={styles.errorSignupText}
+              onSubmitEditing={() => focus(confirmPasswordRef)}
+              ref={passwordRef}
               returnKeyType="next"
               returnKeyLabel="next"
+              blurOnSubmit={false}
             />
 
             <InputComponent
               placeholder="Confirm Password"
-              placeholderTextColor={AppStyles.colorSet.white}
+              placeholderTextColor={AppStyles.colorSet.black}
               value={values.confirmPassword}
               onChangeText={handleChange('confirmPassword')}
               onBlur={() => setFieldTouched('confirmPassword')}
@@ -215,13 +246,17 @@ const SignupScreen = () => {
               touched={touched?.confirmPassword}
               errors={errors?.confirmPassword}
               errorText={styles.errorSignupText}
+              ref={confirmPasswordRef}
+              onSubmitEditing={() => focus(phoneRef)}
               returnKeyType="next"
               returnKeyLabel="next"
+              blurOnSubmit={false}
             />
 
             <RadioButton.Group
               onValueChange={handleChange('gender')}
               onBlur={handleChange('gender')}
+              blurOnSubmit={false}
               value={values?.gender}>
               <View style={styles.radioContainer}>
                 <View>
@@ -243,9 +278,11 @@ const SignupScreen = () => {
               style={styles.textInputName}
               onChangeText={handleChange('phone')}
               onBlur={() => setFieldTouched('phone')}
+              ref={phoneRef}
               keyboardType="numeric"
               returnKeyType="next"
               returnKeyLabel="next"
+              blurOnSubmit={false}
               mask={[
                 '(',
                 /\d/,
@@ -279,6 +316,9 @@ const SignupScreen = () => {
               maxDate={new Date()}
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"
+              blurOnSubmit={false}
+              ref={dobRef}
+              onSubmitEditing={() => handleSubmit}
               customStyles={{
                 dateIcon: {
                   position: 'absolute',
@@ -294,10 +334,11 @@ const SignupScreen = () => {
                 },
                 placeholderText: {
                   fontSize: 17,
-                  color: 'white',
+                  color: AppStyles.colorSet.black,
                 },
                 dateText: {
                   fontSize: 17,
+                  color: AppStyles.colorSet.white,
                 },
               }}
               onDateChange={handleChange('dob')}
@@ -324,6 +365,11 @@ const SignupScreen = () => {
                   <Text style={styles.cameraOption}>
                     Choose from Library...
                   </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => removeImage(handleChange('profileImage'))}>
+                  <Text style={styles.cameraOption}>Remove Image</Text>
                 </TouchableOpacity>
 
                 <View style={styles.buttonHandler}>

@@ -6,16 +6,17 @@ const InitialState = {
   error: 'error duplicate email',
   is_Support: false,
   recoveries: {},
+  block_User: [],
 };
 
 export const userReducer = (state = InitialState, action) => {
   switch (action.type) {
     case Action.CREATE_USER: {
       const duplicateEmail = state?.users?.find(
-        user => user?.email === action?.payload?.mail,
+        user => user?.mail === action?.payload?.mail,
       );
 
-      if (Boolean(duplicateEmail)) {
+      if (duplicateEmail) {
         return {
           ...state,
           error: 'Email already Exist Kindly Signup with Different Email',
@@ -25,7 +26,7 @@ export const userReducer = (state = InitialState, action) => {
       if (!duplicateEmail) {
         const id = state?.users?.length + 1;
         const addUser = {...action?.payload, id};
-        return {...state, users: [...(state?.users ?? []), addUser]};
+        return {...state, users: [...(state?.users ?? []), addUser], error: ''};
       }
     }
     case Action.IS_LOGIN: {
@@ -53,6 +54,12 @@ export const userReducer = (state = InitialState, action) => {
       return {
         ...state,
         recoveries: recover,
+      };
+    }
+    case Action.BLOCKED_USER: {
+      return {
+        ...state,
+        block_User: [...(state?.block_User ?? []), action?.payload],
       };
     }
 

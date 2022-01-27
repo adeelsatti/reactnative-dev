@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {Alert, Image, SafeAreaView, Text, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -13,10 +13,14 @@ import InputComponent from '../../components/InputComponent';
 import ButtonComponent from '../../components/ButtonComponent';
 import {ResetPasswordSchema} from '../../Schema/ResetPasswordSchema';
 import {AUTH_SCREENS} from '../../constants/screen';
+import Toast from 'react-native-toast-message';
 
 const ResetPassword = props => {
   const [loading, setLoading] = useState(false);
+  const [checkError, setCheckError] = useState(true);
   const navigation = useNavigation();
+  const emailRef = useRef();
+  const codeRef = useRef();
 
   const usersState = useSelector(state => state?.users);
   const recoverPasswordEmail = usersState?.recoveries;
@@ -31,6 +35,10 @@ const ResetPassword = props => {
 
   const initialValues = {email: '', code: ''};
 
+  const focus = input => {
+    input.current.focus();
+  };
+
   const handleBackButton = () => {
     navigation.goBack();
   };
@@ -41,21 +49,40 @@ const ResetPassword = props => {
   };
 
   const checkCode = values => {
-    response?.map(recovervalue => {
+    const {email} = values;
+    const checkUpperCase = email.toLowerCase();
+
+    for (const recoverUserPass of response) {
       if (
-        recovervalue?.code === values?.code &&
-        recovervalue?.email === values?.email
+        recoverUserPass?.code === values?.code &&
+        recoverUserPass?.email === checkUpperCase
       ) {
         users?.map(user => {
-          if (user?.email === values?.email) {
-            Alert?.alert('Your Password is :', user?.password);
+          if (user?.mail === checkUpperCase) {
+            Alert.alert('Your Password is', user?.password, [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'OK',
+                onPress: () => navigation.navigate(AUTH_SCREENS.LOGIN),
+              },
+            ]);
+            setCheckError(false);
             setLoading(false);
-            navigation.navigate(AUTH_SCREENS.LOGIN);
           }
         });
       }
-    });
-    //navigation.navigate(AUTH_SCREENS.LOGIN);
+    }
+
+    if (checkError) {
+      Toast.show({
+        type: 'error',
+        text1: 'Wrong email or code',
+        text2: 'kindly check your email and code',
+      });
+    }
     setLoading(false);
   };
 
@@ -105,7 +132,12 @@ const ResetPassword = props => {
                 inputStyle={styles.inputStyle}
                 placeholderTextColor={AppStyles.colorSet.silver}
                 touched={touched?.email}
+                ref={emailRef}
+                onSubmitEditing={() => focus(codeRef)}
                 errors={errors?.email}
+                returnKeyType="next"
+                returnKeyLabel="next"
+                blurOnSubmit={false}
                 errorText={styles.errorText}
               />
 
@@ -119,6 +151,8 @@ const ResetPassword = props => {
                 placeholderTextColor={AppStyles.colorSet.silver}
                 touched={touched?.code}
                 errors={errors?.code}
+                ref={codeRef}
+                onSubmitEditing={handleSubmit}
                 errorText={styles.errorText}
               />
 

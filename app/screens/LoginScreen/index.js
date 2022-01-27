@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
@@ -13,59 +13,89 @@ import ButtonComponent from '../../components/ButtonComponent';
 import {AUTH_SCREENS} from '../../constants/screen';
 import {AppStyles, Images} from '../../themes';
 import {loginValidationSchema} from '../../Schema/LoginSchema';
-import {
-  is_Login,
-  is_Support,
-  resetError,
-} from '../../redux/Actions/AuthActions';
+import {block_User, is_Login} from '../../redux/Actions/AuthActions';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const [loginAttempts, setLoginAttempts] = useState(4);
+  const [loginAttempts, setLoginAttempts] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [check, setCheck] = useState(true);
+  const inputRef = useRef(0);
+  const bodyRef = useRef(0);
 
   const userData = useSelector(state => state?.users);
   const users = userData?.users;
+  const blockEmail = useSelector(state => state?.users?.block_User);
   const dispatch = useDispatch();
 
-  console.log(users);
   const onSignUp = () => {
     navigation.navigate(AUTH_SCREENS.SIGNUP);
   };
 
-  const LoginUser = values => {
-    users?.map(user => {
-      if (
-        user?.email === values?.email &&
-        user?.password === values?.password
-      ) {
-        Toast.show({
-          type: 'success',
-          text1: 'Successfully Login',
-          text2: 'You can access you account',
-        });
-
-        dispatch(is_Login(true));
-        setLoading(false);
-      }
-    });
-
-    Toast.show({
+  const blockUserEmail = inputEmail => {
+    Toast?.show({
       type: 'error',
-      text1: 'Login Faild',
-      text2: 'Enter correct email or password',
+      text1: 'Email Blocked',
+      text2: 'Your Email is blocked by System',
     });
-    setLoginAttempts(attempt => attempt - 1);
-    setLoading(false);
+    dispatch(block_User({email: inputEmail, block: true}));
+    setLoginAttempts(0);
+  };
+  const LoginUser = values => {
+    const {email} = values;
+    const inputEmail = email.toLowerCase();
+    for (const blockMail of blockEmail) {
+      if (blockMail?.email === inputEmail) {
+        return (
+          Toast?.show({
+            type: 'error',
+            text1: 'Already Blocked',
+            text2: 'Email already blocked by System',
+          }),
+          setLoginAttempts(0)
+        );
+      } else {
+        for (const user of users) {
+          if (
+            user?.mail === inputEmail &&
+            user?.password === values?.password
+          ) {
+            return (
+              setCheck(false),
+              Toast.show({
+                type: 'success',
+                text1: 'Successfully Login',
+                text2: 'You can access you account',
+              }),
+              dispatch(is_Login(true))
+            );
+          }
+        }
+
+        if (check) {
+          Toast.show({
+            type: 'error',
+            text1: 'Login Failed',
+            text2: 'Enter correct email or password',
+          });
+        }
+        setLoginAttempts(attempt => attempt + 1);
+        setLoading(false);
+
+        if (loginAttempts > 4) {
+          blockUserEmail(inputEmail);
+        }
+      }
+    }
   };
 
   useEffect(() => {
-    if (!loginAttempts) {
-      dispatch(is_Support(true));
-      setLoading(false);
-    }
-    dispatch(resetError());
+    setLoading(false);
   }, []);
+
+  const focus = input => {
+    input.current?.focus();
+  };
 
   const checkAccount = values => {
     setLoading(true);
@@ -119,7 +149,10 @@ const LoginScreen = () => {
               errors={errors?.email}
               errorText={styles.errorText}
               returnKeyType="next"
+              ref={inputRef}
+              onSubmitEditing={() => focus(bodyRef)}
               returnKeyLabel="next"
+              blurOnSubmit={false}
             />
 
             <InputComponent
@@ -134,8 +167,11 @@ const LoginScreen = () => {
               touched={touched?.password}
               errors={errors?.password}
               errorText={styles.errorText}
-              returnKeyType="next"
-              returnKeyLabel="next"
+              onSubmitEditing={handleSubmit}
+              ref={bodyRef}
+              returnKeyType="done"
+              returnKeyLabel="done"
+              onKeyPress={handleSubmit}
             />
 
             <TouchableOpacity

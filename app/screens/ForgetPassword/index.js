@@ -29,7 +29,6 @@ const ForgetPassword = () => {
   const initialValues = {email: ''};
   const key = uuid.v4();
 
-  console.log(error);
   const handleBackButton = () => {
     navigation.goBack();
   };
@@ -40,24 +39,27 @@ const ForgetPassword = () => {
   };
 
   const emailVerify = values => {
-    users?.map(user => {
-      if (user.email === values?.email) {
-        dispatch(recoverPassword(user?.email, key));
-        setLoading(false);
-        setError(false);
-        navigation.navigate(AUTH_SCREENS.RESETPASSWORD);
+    const email = values?.email.toLowerCase();
+    for (const user of users) {
+      if (user?.mail === email) {
+        return (
+          setError(false),
+          dispatch(recoverPassword(email, key)),
+          navigation.navigate(AUTH_SCREENS.RESETPASSWORD)
+        );
       }
-    });
-    {
-      Boolean(error) &&
-        Toast.show({
-          type: 'error',
-          text1: 'invalid email',
-          text2: 'Email not match kindly check your email',
-        });
+
+      setError(true);
+    }
+
+    if (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'invalid email',
+        text2: 'Email not match kindly check your email',
+      });
     }
     setLoading(false);
-    setError(true);
   };
 
   return (
@@ -107,6 +109,10 @@ const ForgetPassword = () => {
                 touched={touched?.email}
                 errors={errors?.email}
                 errorText={styles.errorText}
+                returnKeyType="done"
+                returnKeyLabel="done"
+                blurOnSubmit={false}
+                onSubmitEditing={handleSubmit}
               />
 
               <ButtonComponent
