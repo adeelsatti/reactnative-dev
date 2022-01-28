@@ -3,3 +3,4 @@ export const IS_LOGIN = 'IS_LOGIN';
 export const IS_SUPPORT = 'IS_SUPPORT';
 export const RESET_ERROR = 'RESET_ERROR';
 export const FORGOT_PASSWORD = 'FORGOT_PASSWORD';
+export const BLOCKED_USER = 'BLOCKED_USER';

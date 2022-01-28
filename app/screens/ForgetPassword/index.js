@@ -6,6 +6,7 @@ import {Formik} from 'formik';
 import uuid from 'react-native-uuid';
 import {useDispatch, useSelector} from 'react-redux';
 import _ from 'lodash';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
 import {AppStyles, Images} from '../../themes';
 import styles from './styles';
@@ -18,6 +19,8 @@ import {AUTH_SCREENS} from '../../constants/screen';
 
 const ForgetPassword = () => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(true);
+
   const navigation = useNavigation();
   const usersState = useSelector(state => state?.users);
   const users = usersState?.users;
@@ -36,16 +39,27 @@ const ForgetPassword = () => {
   };
 
   const emailVerify = values => {
-    users?.map(user => {
-      if (user.email === values?.email) {
-        dispatch(recoverPassword(user?.email, key));
-        setLoading(false);
-        navigation.navigate(AUTH_SCREENS.RESETPASSWORD, {
-          password: user?.password,
-          email: user?.email,
-        });
+    const email = values?.email.toLowerCase();
+    for (const user of users) {
+      if (user?.mail === email) {
+        return (
+          setError(false),
+          dispatch(recoverPassword(email, key)),
+          navigation.navigate(AUTH_SCREENS.RESETPASSWORD)
+        );
       }
-    });
+
+      setError(true);
+    }
+
+    if (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'invalid email',
+        text2: 'Email not match kindly check your email',
+      });
+    }
+    setLoading(false);
   };
 
   return (
@@ -95,6 +109,10 @@ const ForgetPassword = () => {
                 touched={touched?.email}
                 errors={errors?.email}
                 errorText={styles.errorText}
+                returnKeyType="done"
+                returnKeyLabel="done"
+                blurOnSubmit={false}
+                onSubmitEditing={handleSubmit}
               />
 
               <ButtonComponent

@@ -46,7 +46,7 @@ export default StyleSheet.create({
   textInputName: {
     borderBottomWidth: 1,
     marginHorizontal: MetricsMod.thirty,
-    color: AppStyles.colorSet.black,
+    color: AppStyles.colorSet.white,
     fontSize: AppStyles.fontSet.medium,
     borderBottomColor: AppStyles.colorSet.white,
   },

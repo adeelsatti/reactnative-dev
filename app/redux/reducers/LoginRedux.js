@@ -6,13 +6,14 @@ const InitialState = {
   error: 'error duplicate email',
   is_Support: false,
   recoveries: {},
+  block_User: [],
 };
 
 export const userReducer = (state = InitialState, action) => {
   switch (action.type) {
     case Action.CREATE_USER: {
       const duplicateEmail = state?.users?.find(
-        user => user?.email === action?.payload?.email,
+        user => user?.mail === action?.payload?.mail,
       );
 
       if (duplicateEmail) {
@@ -23,7 +24,9 @@ export const userReducer = (state = InitialState, action) => {
       }
 
       if (!duplicateEmail) {
-        return {...state, users: [...(state?.users ?? []), action?.payload]};
+        const id = state?.users?.length + 1;
+        const addUser = {...action?.payload, id};
+        return {...state, users: [...(state?.users ?? []), addUser], error: ''};
       }
     }
     case Action.IS_LOGIN: {
@@ -47,11 +50,16 @@ export const userReducer = (state = InitialState, action) => {
     case Action.FORGOT_PASSWORD: {
       const obj = action?.payload;
       const obj2 = state?.recoveries;
-      const merge = (...objects) => ({...objects});
-      let recover = merge(obj2, obj);
+      let recover = {...obj2, ...obj};
       return {
         ...state,
         recoveries: recover,
+      };
+    }
+    case Action.BLOCKED_USER: {
+      return {
+        ...state,
+        block_User: [...(state?.block_User ?? []), action?.payload],
       };
     }
 

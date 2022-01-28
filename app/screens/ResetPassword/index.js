@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {Alert, Image, SafeAreaView, Text, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Formik} from 'formik';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import _ from 'lodash';
 
 import {AppStyles, Images} from '../../themes';
@@ -11,19 +11,33 @@ import styles from './styles';
 import VectorIcon from '../../components/VectorIcon';
 import InputComponent from '../../components/InputComponent';
 import ButtonComponent from '../../components/ButtonComponent';
-import {ResetPasswordSchema} from '../../Schema/ForgotPasswordSchema';
+import {ResetPasswordSchema} from '../../Schema/ResetPasswordSchema';
 import {AUTH_SCREENS} from '../../constants/screen';
+import Toast from 'react-native-toast-message';
 
 const ResetPassword = props => {
   const [loading, setLoading] = useState(false);
+  const [checkError, setCheckError] = useState(true);
   const navigation = useNavigation();
+  const emailRef = useRef();
+  const codeRef = useRef();
 
   const usersState = useSelector(state => state?.users);
   const recoverPasswordEmail = usersState?.recoveries;
+  const users = usersState?.users;
   const data = props?.route?.params;
 
-  console.log(usersState?.recoveries);
-  const initialValues = {code: ''};
+  const keys = Object.keys(recoverPasswordEmail);
+  const val = Object.values(recoverPasswordEmail);
+  const response = keys.map((email, i) => {
+    return {email: email, code: val[i]};
+  });
+
+  const initialValues = {email: '', code: ''};
+
+  const focus = input => {
+    input.current.focus();
+  };
 
   const handleBackButton = () => {
     navigation.goBack();
@@ -35,13 +49,40 @@ const ResetPassword = props => {
   };
 
   const checkCode = values => {
-    if (recoverPasswordEmail?.key === values?.code) {
-      setLoading(false);
-      Alert?.alert('Your password is this:', data?.password);
-      navigation.navigate(AUTH_SCREENS.LOGIN);
+    const {email} = values;
+    const checkUpperCase = email.toLowerCase();
+
+    for (const recoverUserPass of response) {
+      if (
+        recoverUserPass?.code === values?.code &&
+        recoverUserPass?.email === checkUpperCase
+      ) {
+        users?.map(user => {
+          if (user?.mail === checkUpperCase) {
+            Alert.alert('Your Password is', user?.password, [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'OK',
+                onPress: () => navigation.navigate(AUTH_SCREENS.LOGIN),
+              },
+            ]);
+            setCheckError(false);
+            setLoading(false);
+          }
+        });
+      }
     }
-    Alert.alert('Code not match', recoverPasswordEmail?.key);
-    navigation.navigate(AUTH_SCREENS.LOGIN);
+
+    if (checkError) {
+      Toast.show({
+        type: 'error',
+        text1: 'Wrong email or code',
+        text2: 'kindly check your email and code',
+      });
+    }
     setLoading(false);
   };
 
@@ -83,6 +124,24 @@ const ResetPassword = props => {
               </Text>
 
               <InputComponent
+                value={values?.email}
+                placeholder="Enter email"
+                autoFocus={true}
+                onChangeText={handleChange('email')}
+                onBlur={() => setFieldTouched('email')}
+                inputStyle={styles.inputStyle}
+                placeholderTextColor={AppStyles.colorSet.silver}
+                touched={touched?.email}
+                ref={emailRef}
+                onSubmitEditing={() => focus(codeRef)}
+                errors={errors?.email}
+                returnKeyType="next"
+                returnKeyLabel="next"
+                blurOnSubmit={false}
+                errorText={styles.errorText}
+              />
+
+              <InputComponent
                 value={values?.code}
                 placeholder="Enter code"
                 autoFocus={true}
@@ -92,6 +151,8 @@ const ResetPassword = props => {
                 placeholderTextColor={AppStyles.colorSet.silver}
                 touched={touched?.code}
                 errors={errors?.code}
+                ref={codeRef}
+                onSubmitEditing={handleSubmit}
                 errorText={styles.errorText}
               />
 
