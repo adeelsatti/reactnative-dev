@@ -99,10 +99,8 @@ const LoginScreen = () => {
     const inputEmail = email.toLowerCase();
 
     if (previous === inputEmail) {
-      console.log('prev', previous, 'next', inputEmail, 'count', loginAttempts);
       CheckUserEmail(values, inputEmail);
     } else {
-      console.log('prev', previous, 'next', inputEmail);
       setPrevious(inputEmail);
       setLoginAttempts(0);
       CheckUserEmail(values, inputEmail);
