@@ -59,18 +59,20 @@ const ResetPassword = props => {
       ) {
         users?.map(user => {
           if (user?.mail === checkUpperCase) {
-            Alert.alert('Your Password is', user?.password, [
-              {
-                text: 'Cancel',
-                style: 'cancel',
-              },
-              {
-                text: 'OK',
-                onPress: () => navigation.navigate(AUTH_SCREENS.LOGIN),
-              },
-            ]);
-            setCheckError(false);
-            setLoading(false);
+            return (
+              Alert.alert('Your Password is', user?.password, [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: 'OK',
+                  onPress: () => navigation.navigate(AUTH_SCREENS.LOGIN),
+                },
+              ]),
+              setCheckError(false),
+              setLoading(false)
+            );
           }
         });
       }

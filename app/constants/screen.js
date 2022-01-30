@@ -8,4 +8,5 @@ export const AUTH_SCREENS = {
 
 export const MAIN_SCREENS = {
   HOME: 'Home',
+  CREATE_POST: 'CreatePost',
 };

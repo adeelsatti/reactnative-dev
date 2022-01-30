@@ -23,7 +23,7 @@ import {AUTH_SCREENS} from '../../constants/screen';
 
 const SignupScreen = () => {
   const navigation = useNavigation();
-  const [image, setImage] = useState();
+  const [image, setImage] = useState(false);
   const [modal, setModal] = useState();
   const [loading, setLoading] = useState(false);
   const inputRef = useRef();
@@ -38,17 +38,30 @@ const SignupScreen = () => {
   const duplicateEmailError = useSelector(state => state?.users?.error);
   const users = useSelector(state => state?.users.users);
   const lastUser = users[users.length - 1];
+  const firstUser = users[0];
 
   let initialValues = {
-    profileImage: '',
+    profileImage: lastUser?.profileImage,
     fName: lastUser?.fName,
     lName: lastUser?.lName,
     email: lastUser?.mail,
     password: lastUser?.password,
-    confirmPassword: lastUser?.confirmPassword,
+    confirmPassword: lastUser?.password,
     gender: lastUser?.gender,
     phone: lastUser?.phoneNumber,
     dob: lastUser?.dob,
+  };
+
+  let firstUserValue = {
+    profileImage: firstUser?.profileImage,
+    fName: firstUser?.fName,
+    lName: firstUser?.lName,
+    email: firstUser?.mail,
+    password: firstUser?.password,
+    confirmPassword: firstUser?.password,
+    gender: firstUser?.gender,
+    phone: firstUser?.phoneNumber,
+    dob: firstUser?.dob,
   };
 
   useEffect(() => {
@@ -62,7 +75,6 @@ const SignupScreen = () => {
       cropping: true,
     });
     const imageCamera = {uri: img?.path};
-    setImage(imageCamera);
     handleChange(imageCamera?.uri);
     setModal(false);
   };
@@ -74,13 +86,12 @@ const SignupScreen = () => {
       cropping: true,
     });
     const imageCamera = {uri: img?.path};
-    setImage(imageCamera);
     setModal(false);
     handleChange(imageCamera?.uri);
   };
 
   const removeImage = handleChange => {
-    handleChange(image);
+    handleChange();
     setModal(false);
   };
 
@@ -131,7 +142,8 @@ const SignupScreen = () => {
       validationSchema={signUpValidationSchema}
       onSubmit={(values, {resetForm}) => {
         dispatchUser(values);
-        resetForm(initialValues);
+        setImage(true);
+        resetForm({values: firstUserValue});
       }}>
       {({
         values,
@@ -158,7 +170,11 @@ const SignupScreen = () => {
 
             <TouchableOpacity onPress={handleModal} style={styles.uploadImage}>
               <Image
-                source={image ?? {uri: lastUser?.profileImage}}
+                source={
+                  image
+                    ? {uri: firstUserValue?.profileImage}
+                    : {uri: initialValues?.profileImage}
+                }
                 style={styles.uploadImage}
               />
             </TouchableOpacity>
@@ -282,7 +298,6 @@ const SignupScreen = () => {
               keyboardType="numeric"
               returnKeyType="next"
               returnKeyLabel="next"
-              blurOnSubmit={false}
               mask={[
                 '(',
                 /\d/,

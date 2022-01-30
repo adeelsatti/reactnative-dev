@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -9,23 +9,49 @@ import {
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {FloatingAction} from 'react-native-floating-action';
+import {useNavigation} from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
+import {ReactNativeModal} from 'react-native-modal';
 
 import styles from './styles';
 import {is_Login} from '../../redux/Actions/AuthActions';
-import useApiFetch from '../../hooks/useApiFetch';
 import EmptyComponent from '../../components/EmptyComponent';
 import {AppStyles, Images} from '../../themes';
 import SearchInput from '../../components/SearchInput';
-import {FloatingButtonAction} from '../../constants/floatingButtonAction';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu';
+import {MAIN_SCREENS} from '../../constants/screen';
+import {DeleteApiCall, FetchPostAPI} from '../../ApiCaller/PostApiCall';
 
 const HomeScreen = () => {
   const [search, setSearch] = useState('');
-  const {loading, error, data} = useApiFetch(
-    'https://jsonplaceholder.typicode.com/posts',
-  );
+  const [modal, setModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(false);
+  const [fetching, setFetching] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState();
+  const [data, setData] = useState(null);
 
+  const fetchPostData = async () => {
+    try {
+      setLoading(true);
+      const {result} = await FetchPostAPI();
+      setData(result);
+      setLoading(false);
+      setFetching(false);
+    } catch (err) {
+      setError(err);
+      setLoading(false);
+      setFetching(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPostData();
+  }, [fetching]);
+
+  const dataLength = data?.length;
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const onLogout = () => {
     dispatch(is_Login(false));
@@ -53,7 +79,11 @@ const HomeScreen = () => {
 
         <View style={styles.menuWrapper}>
           <TouchableOpacity style={styles.menuButton}>
-            <ThreeDotsMenu />
+            <ThreeDotsMenu
+              item={item}
+              setModal={setModal}
+              setSelectedItem={setSelectedItem}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -62,6 +92,36 @@ const HomeScreen = () => {
 
   const onChangeSearch = search => {
     setSearch(search);
+  };
+
+  const onCreatePost = () => {
+    navigation.navigate(MAIN_SCREENS.CREATE_POST, dataLength);
+  };
+
+  const onDone = async () => {
+    const {response} = await DeleteApiCall(selectedItem?.id, {
+      method: 'DELETE',
+    });
+    if (response?.ok) {
+      Toast.show({
+        type: 'success',
+        text1: 'Delete Post Successful',
+      });
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: 'something went wrong',
+      });
+      setModal(false);
+    }
+  };
+
+  const onCancel = () => {
+    setModal(false);
+  };
+
+  const onRefresh = () => {
+    setFetching(true);
   };
 
   return (
@@ -85,16 +145,45 @@ const HomeScreen = () => {
         placeholder={'Search...'}
         searchIconColor={styles.searchIconColor}
       />
+
       <FlatList
         data={data}
         renderItem={onRenderUsers}
         keyExtractor={(item, index) => item?.id || index}
         ListEmptyComponent={<EmptyComponent loading={loading} error={error} />}
+        onRefresh={onRefresh}
+        refreshing={fetching}
       />
+
       <FloatingAction
-        actions={FloatingButtonAction}
+        onPressMain={onCreatePost}
         color={AppStyles.colorSet.orange}
       />
+
+      <ReactNativeModal
+        isVisible={modal}
+        coverScreen={true}
+        hasBackdrop={true}
+        onBackdropPress={() => setModal(false)}>
+        <View style={styles.removeContainer}>
+          <Text style={styles.confirmText}>
+            Are you sure you want to delete this user ?
+          </Text>
+
+          <View style={styles.removeButtonContainer}>
+            <TouchableOpacity
+              style={styles.confirmDeleteButton}
+              onPress={onDone}>
+              <Text style={styles.deleteText}>OK</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.confirmCancelButton}
+              onPress={onCancel}>
+              <Text style={styles.deleteText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ReactNativeModal>
     </SafeAreaView>
   );
 };

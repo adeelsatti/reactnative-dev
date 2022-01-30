@@ -16,6 +16,7 @@ const InputComponent = (props, ref) => {
     onSubmitEditing,
     returnKeyType,
     blurOnSubmit,
+    multiline,
     returnKeyLabel,
     onKeyPress,
   } = props;
@@ -34,6 +35,7 @@ const InputComponent = (props, ref) => {
         returnKeyType={returnKeyType}
         returnKeyLabel={returnKeyLabel}
         onKeyPress={onKeyPress}
+        multiline={multiline}
         ref={ref}
         blurOnSubmit={blurOnSubmit}
       />

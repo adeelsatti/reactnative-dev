@@ -20,6 +20,8 @@ const LoginScreen = () => {
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [loading, setLoading] = useState(false);
   const [check, setCheck] = useState(true);
+  const [previous, setPrevious] = useState('');
+
   const inputRef = useRef(0);
   const bodyRef = useRef(0);
 
@@ -27,6 +29,11 @@ const LoginScreen = () => {
   const users = userData?.users;
   const blockEmail = useSelector(state => state?.users?.block_User);
   const dispatch = useDispatch();
+
+  let initialValues = {
+    email: '',
+    password: '',
+  };
 
   const onSignUp = () => {
     navigation.navigate(AUTH_SCREENS.SIGNUP);
@@ -41,9 +48,8 @@ const LoginScreen = () => {
     dispatch(block_User({email: inputEmail, block: true}));
     setLoginAttempts(0);
   };
-  const LoginUser = values => {
-    const {email} = values;
-    const inputEmail = email.toLowerCase();
+
+  const CheckUserEmail = (values, inputEmail) => {
     for (const blockMail of blockEmail) {
       if (blockMail?.email === inputEmail) {
         return (
@@ -52,40 +58,55 @@ const LoginScreen = () => {
             text1: 'Already Blocked',
             text2: 'Email already blocked by System',
           }),
-          setLoginAttempts(0)
+          setLoginAttempts(0),
+          setLoading(false)
         );
-      } else {
-        for (const user of users) {
-          if (
-            user?.mail === inputEmail &&
-            user?.password === values?.password
-          ) {
-            return (
-              setCheck(false),
-              Toast.show({
-                type: 'success',
-                text1: 'Successfully Login',
-                text2: 'You can access you account',
-              }),
-              dispatch(is_Login(true))
-            );
-          }
-        }
-
-        if (check) {
-          Toast.show({
-            type: 'error',
-            text1: 'Login Failed',
-            text2: 'Enter correct email or password',
-          });
-        }
-        setLoginAttempts(attempt => attempt + 1);
-        setLoading(false);
-
-        if (loginAttempts > 4) {
-          blockUserEmail(inputEmail);
-        }
       }
+    }
+
+    for (const user of users) {
+      if (user?.mail === inputEmail && user?.password === values?.password) {
+        return (
+          setCheck(false),
+          Toast.show({
+            type: 'success',
+            text1: 'Successfully Login',
+            text2: 'You can access you account',
+          }),
+          dispatch(is_Login(true)),
+          setLoading(false)
+        );
+      }
+    }
+
+    if (check) {
+      Toast.show({
+        type: 'error',
+        text1: 'Login Failed',
+        text2: 'Enter correct email or password',
+      });
+    }
+    setLoginAttempts(attempt => attempt + 1);
+    setLoading(false);
+
+    if (loginAttempts > 4) {
+      blockUserEmail(inputEmail);
+    }
+  };
+
+  const LoginUser = values => {
+    const {email} = values;
+    const inputEmail = email.toLowerCase();
+
+    if (previous === inputEmail) {
+      console.log('prev', previous, 'next', inputEmail, 'count', loginAttempts);
+      CheckUserEmail(values, inputEmail);
+    } else {
+      console.log('prev', previous, 'next', inputEmail);
+      setPrevious(inputEmail);
+      setLoginAttempts(0);
+      CheckUserEmail(values, inputEmail);
+      setLoading(false);
     }
   };
 
@@ -108,10 +129,7 @@ const LoginScreen = () => {
 
   return (
     <Formik
-      initialValues={{
-        email: '',
-        password: '',
-      }}
+      initialValues={initialValues}
       onSubmit={values => checkAccount(values)}
       validationSchema={loginValidationSchema}>
       {({
@@ -167,7 +185,7 @@ const LoginScreen = () => {
               touched={touched?.password}
               errors={errors?.password}
               errorText={styles.errorText}
-              onSubmitEditing={handleSubmit}
+              onSubmitEditing={() => handleSubmit}
               ref={bodyRef}
               returnKeyType="done"
               returnKeyLabel="done"
