@@ -23,6 +23,7 @@ const ForgetPassword = () => {
 
   const navigation = useNavigation();
   const usersState = useSelector(state => state?.users);
+  const blockUsers = useSelector(state => state?.users?.block_User);
   const users = usersState?.users;
   const dispatch = useDispatch();
 
@@ -40,11 +41,24 @@ const ForgetPassword = () => {
 
   const emailVerify = values => {
     const email = values?.email.toLowerCase();
+    for (const block of blockUsers) {
+      if (block?.email === email) {
+        return (
+          Toast.show({
+            type: 'error',
+            text1: 'Email Block',
+            text2: 'This email is block',
+          }),
+          setLoading(false)
+        );
+      }
+    }
     for (const user of users) {
       if (user?.mail === email) {
         return (
           setError(false),
           dispatch(recoverPassword(email, key)),
+          setLoading(false),
           navigation.navigate(AUTH_SCREENS.RESETPASSWORD)
         );
       }
@@ -111,7 +125,6 @@ const ForgetPassword = () => {
                 errorText={styles.errorText}
                 returnKeyType="done"
                 returnKeyLabel="done"
-                blurOnSubmit={false}
                 onSubmitEditing={handleSubmit}
               />
 

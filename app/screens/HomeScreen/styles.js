@@ -89,4 +89,40 @@ export default StyleSheet.create({
     marginTop: MetricsMod.twenty,
     marginHorizontal: MetricsMod.six,
   },
+  removeContainer: {
+    backgroundColor: AppStyles.colorSet.white,
+    paddingHorizontal: MetricsMod.twenty,
+    paddingVertical: MetricsMod.six,
+    borderRadius: MetricsMod.twelve,
+  },
+  confirmText: {
+    fontSize: AppStyles.fontSet.middle,
+    fontFamily: AppStyles.fontFamily.robotoBold,
+    marginHorizontal: MetricsMod.twenty,
+    marginTop: MetricsMod.six,
+  },
+  removeButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: MetricsMod.forty,
+  },
+  confirmDeleteButton: {
+    justifyContent: 'center',
+    backgroundColor: AppStyles.colorSet.orange,
+    borderRadius: MetricsMod.six,
+    padding: MetricsMod.six,
+  },
+  confirmCancelButton: {
+    justifyContent: 'center',
+    backgroundColor: AppStyles.colorSet.orange,
+    borderRadius: MetricsMod.six,
+    padding: MetricsMod.six,
+    marginHorizontal: MetricsMod.six,
+  },
+  deleteText: {
+    fontSize: AppStyles.fontSet.normal,
+    fontFamily: AppStyles.fontFamily.robotoBold,
+    marginHorizontal: MetricsMod.twenty,
+    color: AppStyles.colorSet.white,
+  },
 });
